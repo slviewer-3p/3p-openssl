@@ -5,6 +5,12 @@ set -x
 # make errors fatal
 set -e
 
+OPENSSL_VERSION="0.9.8j"
+OPENSSL_SOURCE_DIR="openssl-$OPENSSL_VERSION"
+OPENSSL_ARCHIVE="$OPENSSL_SOURCE_DIR.tar.gz"
+OPENSSL_URL="http://www.openssl.org/source/$OPENSSL_ARCHIVE"
+OPENSSL_MD5="a5cb5f6c3d11affb387ecf7a997cac0c"  # for openssl-0.9.8j.tar.gz"
+
 if [ -z "$autobuild" ] ; then 
     fail
 fi
@@ -14,31 +20,46 @@ set +x
 eval "$("$autobuild" source_environment)"
 set -x
 
-fetch_archive "$FOO_URL" "$FOO_ARCHIVE" "$FOO_MD5"
-extract "$FOO_ARCHIVE"
+fetch_archive "$OPENSSL_URL" "$OPENSSL_ARCHIVE" "$OPENSSL_MD5"
+extract "$OPENSSL_ARCHIVE"
 
 top="$(pwd)"
-cd "$FOO_SOURCE_DIR"
+cd "$OPENSSL_SOURCE_DIR"
     case "$AUTOBUILD_PLATFORM" in
         "windows")
-            build_sln "foo.sln" "Debug|Win32"
-            build_sln "foo.sln" "Release|Win32"
-            mkdir -p stage/lib/{debug,release}
-            cp "Debug/foo.lib" \
-                "stage/lib/debug/foo.lib"
-            cp "Release/foo.lib" \
-                "stage/lib/release/foo.lib"
-            mkdir -p "stage/include/foo"
-            cp foo.h "stage/include/foo"
+            # disable idea cypher per Phoenix's patent concerns (DEV-22827)
+            perl Configure no-idea "VC-WIN32"
+
+            ./ms/do_masm.bat
+
+            patch ms/ntdll.mak < ../openssl-disable-manifest.patch
+
+            # *TODO figure out why this step fails when I use cygwin perl instead of
+            # ActiveState perl for the above configure
+            nmake -f ms/ntdll.mak 
+
+            mkdir -p stage/lib/debug
+            mkdir -p stage/lib/release
+
+            cp "out32dll/libeay32.lib" "stage/lib/debug" \ || exit 1
+            cp "out32dll/ssleay32.lib" "stage/lib/debug" \ || exit 1
+            cp "out32dll/libeay32.lib" "stage/lib/release" \ || exit 1
+            cp "out32dll/ssleay32.lib" "stage/lib/release" \ || exit 1
+
+            cp out32dll/{libeay32,ssleay32}.dll "stage/lib/debug"   || exit 1
+            cp out32dll/{libeay32,ssleay32}.dll "stage/lib/release" || exit 1
+
+            # *NOTE: the -L is important because they're symlinks in the openssl dist.
+            cp -r -L "include/openssl" "stage/include/openssl"
         ;;
         *)
-            ./configure --prefix="$(pwd)/stage"
+            ./config no-idea --prefix="$(pwd)/stage" -fno-stack-protector
             make
             make install
         ;;
     esac
     mkdir -p stage/LICENSES
-    cp COPYING stage/LICENSES/foo.txt
+    cp LICENSE stage/LICENSES/openssl.txt
 cd "$top"
 
 pass

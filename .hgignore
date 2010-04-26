@@ -1,3 +1,5 @@
 syntax: glob
 build-*
 autobuild-parabuild-bootstrap/
+openssl-0.9.8j/
+openssl-0.9.8j.tar.gz

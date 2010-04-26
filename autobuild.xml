@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <llsd>
 <map>
-    <key>llfoo</key>
+    <key>openssl</key>
     <map>
       <key>build</key>
       <map>
@@ -12,7 +12,56 @@
         </map>
       </map>
       <key>builddir</key>
-      <string>build</string>
+      <string>openssl-0.9.8j/stage</string>
+      <key>license</key>
+      <string>openssl</string>
+      <key>licensefile</key>
+      <string>LICENSES/openssl.txt</string>
+      <key>manifest</key>
+      <map>
+        <key>common</key>
+        <map>
+          <key>files</key>
+          <array>
+            <string>include/openssl/*.h</string>
+            <string>LICENSES/openssl.txt</string>
+          </array>
+        </map>
+        <key>darwin</key>
+        <map>
+          <key>files</key>
+          <array>
+            <string>lib/libcrypto.a</string>
+            <string>lib/libssl.a</string>
+          </array>
+        </map>
+        <key>linux</key>
+        <map>
+          <key>files</key>
+          <array>
+            <string>lib/libcrypto.a</string>
+            <string>lib/libssl.a</string>
+          </array>
+        </map>
+        <key>windows</key>
+        <map>
+          <key>files</key>
+          <array>
+            <string>lib/debug/libeay32.lib</string>
+            <string>lib/debug/libeay32.dll</string>
+            <string>lib/debug/ssleay32.lib</string>
+            <string>lib/debug/ssleay32.dll</string>
+            <string>lib/release/libeay32.lib</string>
+            <string>lib/release/libeay32.dll</string>
+            <string>lib/release/ssleay32.lib</string>
+            <string>lib/release/ssleay32.dll</string>
+          </array>
+        </map>
+      </map>
+      <key>sourcedir</key>
+      <string>openssl-0.9.8j</string>
+      <key>version</key>
+      <string>0.9.8j</string>
     </map>
   </map>
 </llsd>
