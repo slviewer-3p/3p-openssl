@@ -11,6 +11,11 @@ OPENSSL_ARCHIVE="$OPENSSL_SOURCE_DIR.tar.gz"
 OPENSSL_URL="http://www.openssl.org/source/$OPENSSL_ARCHIVE"
 OPENSSL_MD5="a5cb5f6c3d11affb387ecf7a997cac0c"  # for openssl-0.9.8j.tar.gz"
 
+if [ "$OSTYPE" = "cygwin" ] ; then
+    # *HACK windows env vars are crap -brad
+    export autobuild="$(cygpath -u $AUTOBUILD)"
+fi
+
 if [ -z "$autobuild" ] ; then 
     fail
 fi
