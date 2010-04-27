@@ -1,0 +1,8 @@
+33c33
+< LFLAGS=/nologo /subsystem:console /opt:ref
+---
+> LFLAGS=/nologo /subsystem:console /opt:ref /MANIFEST:NO
+76c76
+< MLFLAGS= /nologo /subsystem:console /opt:ref /dll
+---
+> MLFLAGS= /nologo /subsystem:console /opt:ref /dll /MANIFEST:NO
