@@ -59,8 +59,13 @@ cd "$OPENSSL_SOURCE_DIR"
             # *NOTE: the -L is important because they're symlinks in the openssl dist.
             cp -r -L "include/openssl" "stage/include/openssl"
         ;;
-        *)
+        "darwin")
             ./config no-idea --prefix="$(pwd)/stage" -fno-stack-protector
+            make
+            make install
+        ;;
+        "linux")
+			./Configure no-idea linux-generic32 -fno-stack-protector -m32
             make
             make install
         ;;
