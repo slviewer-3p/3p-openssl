@@ -65,7 +65,7 @@ cd "$OPENSSL_SOURCE_DIR"
             make install
         ;;
         "linux")
-			./Configure no-idea linux-generic32 -fno-stack-protector -m32
+			./Configure no-idea linux-generic32 -fno-stack-protector -m32 --prefix="$(pwd)/stage"
             make
             make install
         ;;
