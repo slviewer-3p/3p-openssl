@@ -55,12 +55,13 @@ set -x
 "$AUTOBUILD" package
 
 OPENSSL_INSTALLABLE_PACKAGE_FILENAME="$(ls -1 openssl-$OPENSSL_VERSION-$AUTOBUILD_PLATFORM-$(date +%Y%m%d)*.tar.bz2)"
-"$AUTOBUILD" upload "$OPENSSL_INSTALLABLE_PACKAGE_FILENAME"
+#"$AUTOBUILD" upload "$OPENSSL_INSTALLABLE_PACKAGE_FILENAME"
+upload_item installer "$OPENSSL_INSTALLABLE_PACKAGE_FILENAME" binary/octet-stream
 
 OPENSSL_INSTALLABLE_PACKAGE_MD5="$(calc_md5 "$OPENSSL_INSTALLABLE_PACKAGE_FILENAME")"
-echo "{'md5':'$OPENSSL_INSTALLABLE_PACKAGE_MD5', 'url':'http://s3.amazonaws.com/viewer-source-downloads/install_pkgs/$OPENSSL_INSTALLABLE_PACKAGE_FILENAME'}" > "output.js"
+echo "{'md5':'$OPENSSL_INSTALLABLE_PACKAGE_MD5', 'filename':'$OPENSSL_INSTALLABLE_PACKAGE_FILENAME'}" > "output.js"
 
-#upload_item installer "output.js" text/plain
+upload_item installer "output.js" text/plain
 
 pass
 
