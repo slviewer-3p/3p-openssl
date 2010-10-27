@@ -9,10 +9,10 @@
         <map>
           <key>command</key>
           <string>sh ./build-cmd.sh</string>
+          <key>directory</key>
+          <string>openssl-0.9.8j/stage</string>
         </map>
       </map>
-      <key>builddir</key>
-      <string>openssl-0.9.8j/stage</string>
       <key>license</key>
       <string>openssl</string>
       <key>licensefile</key>
