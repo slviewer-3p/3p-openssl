@@ -57,7 +57,7 @@ cd "$OPENSSL_SOURCE_DIR"
 
             mkdir -p stage/include/openssl
             # *NOTE: the -L is important because they're symlinks in the openssl dist.
-            cp -r -L "include/openssl" "stage/include/openssl"
+            cp -r -L "include/openssl" "stage/include/"
         ;;
         "darwin")
             #./config no-idea --prefix="$(pwd)/stage" -fno-stack-protector
