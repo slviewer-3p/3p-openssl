@@ -1,51 +1,70 @@
 <?xml version="1.0" ?>
 <llsd>
 <map>
-    <key>openssl</key>
+    <key>package_description</key>
     <map>
-      <key>build</key>
-      <map>
-        <key>common</key>
-        <map>
-          <key>command</key>
-          <string>sh ./build-cmd.sh</string>
-          <key>directory</key>
-          <string>openssl-0.9.8j/stage</string>
-        </map>
-      </map>
       <key>license</key>
       <string>openssl</string>
-      <key>licensefile</key>
+      <key>license_file</key>
       <string>LICENSES/openssl.txt</string>
-      <key>manifest</key>
+      <key>name</key>
+      <string>openssl</string>
+      <key>platforms</key>
       <map>
         <key>common</key>
         <map>
-          <key>files</key>
+          <key>build_directory</key>
+          <string>openssl-0.9.8j/stage</string>
+          <key>configurations</key>
+          <map>
+            <key>RelWithDebInfo</key>
+            <map>
+              <key>build</key>
+              <map>
+                <key>arguments</key>
+                <array>
+                  <string>./build-cmd.sh</string>
+                </array>
+                <key>command</key>
+                <string>sh</string>
+              </map>
+              <key>default</key>
+              <boolean>true</boolean>
+              <key>name</key>
+              <string>RelWithDebInfo</string>
+            </map>
+          </map>
+          <key>manifest</key>
           <array>
             <string>include/openssl/*.h</string>
             <string>LICENSES/openssl.txt</string>
           </array>
+          <key>name</key>
+          <string>common</string>
         </map>
         <key>darwin</key>
         <map>
-          <key>files</key>
+          <key>manifest</key>
           <array>
             <string>lib/libcrypto.a</string>
             <string>lib/libssl.a</string>
           </array>
+          <key>name</key>
+          <string>darwin</string>
         </map>
         <key>linux</key>
         <map>
-          <key>files</key>
+          <key>manifest</key>
           <array>
             <string>lib/libcrypto.a</string>
             <string>lib/libssl.a</string>
           </array>
+          <key>name</key>
+          <string>linux</string>
         </map>
         <key>windows</key>
         <map>
-          <key>files</key>
+          <key>manifest</key>
           <array>
             <string>lib/debug/libeay32.lib</string>
             <string>lib/debug/libeay32.dll</string>
@@ -56,14 +75,18 @@
             <string>lib/release/ssleay32.lib</string>
             <string>lib/release/ssleay32.dll</string>
           </array>
+          <key>name</key>
+          <string>windows</string>
         </map>
       </map>
-      <key>sourcedir</key>
+      <key>source_directory</key>
       <string>openssl-0.9.8j</string>
       <key>version</key>
       <string>0.9.8j</string>
-      <key>uploadtos3</key>
-	  <integer>1</integer>
     </map>
+    <key>type</key>
+    <string>autobuild</string>
+    <key>version</key>
+    <string>1.2</string>
   </map>
 </llsd>
