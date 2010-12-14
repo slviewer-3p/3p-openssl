@@ -13,11 +13,9 @@
       <map>
         <key>common</key>
         <map>
-          <key>build_directory</key>
-          <string>openssl-0.9.8j/stage</string>
           <key>configurations</key>
           <map>
-            <key>RelWithDebInfo</key>
+            <key>default</key>
             <map>
               <key>build</key>
               <map>
@@ -31,7 +29,7 @@
               <key>default</key>
               <boolean>true</boolean>
               <key>name</key>
-              <string>RelWithDebInfo</string>
+              <string>default</string>
             </map>
           </map>
           <key>manifest</key>
@@ -44,6 +42,21 @@
         </map>
         <key>darwin</key>
         <map>
+          <key>build_directory</key>
+          <string>./stage</string>
+          <key>configurations</key>
+          <map>
+            <key>default</key>
+            <map>
+              <key>build</key>
+              <map>
+              </map>
+              <key>default</key>
+              <string>true</string>
+              <key>name</key>
+              <string>default</string>
+            </map>
+          </map>
           <key>manifest</key>
           <array>
             <string>lib/libcrypto.a</string>
@@ -54,6 +67,21 @@
         </map>
         <key>linux</key>
         <map>
+          <key>build_directory</key>
+          <string>./stage</string>
+          <key>configurations</key>
+          <map>
+            <key>default</key>
+            <map>
+              <key>build</key>
+              <map>
+              </map>
+              <key>default</key>
+              <string>true</string>
+              <key>name</key>
+              <string>default</string>
+            </map>
+          </map>
           <key>manifest</key>
           <array>
             <string>lib/libcrypto.a</string>
@@ -64,6 +92,21 @@
         </map>
         <key>windows</key>
         <map>
+          <key>build_directory</key>
+          <string>./stage</string>
+          <key>configurations</key>
+          <map>
+            <key>default</key>
+            <map>
+              <key>build</key>
+              <map>
+              </map>
+              <key>default</key>
+              <string>true</string>
+              <key>name</key>
+              <string>default</string>
+            </map>
+          </map>
           <key>manifest</key>
           <array>
             <string>lib/debug/libeay32.lib</string>

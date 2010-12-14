@@ -50,7 +50,7 @@ set +x
 eval "$("$AUTOBUILD" source_environment)"
 set -x
 
-"$AUTOBUILD" build
+"$AUTOBUILD" build --use-cwd
 
 "$AUTOBUILD" package
 
@@ -59,9 +59,9 @@ OPENSSL_INSTALLABLE_PACKAGE_FILENAME="$(ls -1 openssl-$OPENSSL_VERSION-$AUTOBUIL
 upload_item installer "$OPENSSL_INSTALLABLE_PACKAGE_FILENAME" binary/octet-stream
 
 OPENSSL_INSTALLABLE_PACKAGE_MD5="$(calc_md5 "$OPENSSL_INSTALLABLE_PACKAGE_FILENAME")"
-echo "{'md5':'$OPENSSL_INSTALLABLE_PACKAGE_MD5', 'filename':'$OPENSSL_INSTALLABLE_PACKAGE_FILENAME'}" > "output.js"
+echo "{'md5':'$OPENSSL_INSTALLABLE_PACKAGE_MD5', 'filename':'$OPENSSL_INSTALLABLE_PACKAGE_FILENAME'}" > "output.json"
 
-upload_item installer "output.js" text/plain
+upload_item installer "output.json" text/plain
 
 pass
 

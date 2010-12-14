@@ -28,6 +28,7 @@ fetch_archive "$OPENSSL_URL" "$OPENSSL_ARCHIVE" "$OPENSSL_MD5"
 extract "$OPENSSL_ARCHIVE"
 
 top="$(pwd)"
+stage="$top/stage"
 cd "$OPENSSL_SOURCE_DIR"
     case "$AUTOBUILD_PLATFORM" in
         "windows")
@@ -44,36 +45,35 @@ cd "$OPENSSL_SOURCE_DIR"
             # ActiveState perl for the above configure
             nmake -f ms/ntdll.mak 
 
-            mkdir -p stage/lib/debug
-            mkdir -p stage/lib/release
+            mkdir -p "$stage/lib/debug"
+            mkdir -p "$stage/lib/release"
 
-            cp "out32dll/libeay32.lib" "stage/lib/debug"
-            cp "out32dll/ssleay32.lib" "stage/lib/debug"
-            cp "out32dll/libeay32.lib" "stage/lib/release"
-            cp "out32dll/ssleay32.lib" "stage/lib/release"
+            cp "out32dll/libeay32.lib" "$stage/lib/debug"
+            cp "out32dll/ssleay32.lib" "$stage/lib/debug"
+            cp "out32dll/libeay32.lib" "$stage/lib/release"
+            cp "out32dll/ssleay32.lib" "$stage/lib/release"
 
-            cp out32dll/{libeay32,ssleay32}.dll "stage/lib/debug"
-            cp out32dll/{libeay32,ssleay32}.dll "stage/lib/release"
+            cp out32dll/{libeay32,ssleay32}.dll "$stage/lib/debug"
+            cp out32dll/{libeay32,ssleay32}.dll "$stage/lib/release"
 
-            mkdir -p stage/include/openssl
+            mkdir -p "$stage/include/openssl"
             # *NOTE: the -L is important because they're symlinks in the openssl dist.
-            cp -r -L "include/openssl" "stage/include/"
+            cp -r -L "include/openssl" "$stage/include/"
         ;;
         "darwin")
-            #./config no-idea --prefix="$(pwd)/stage" -fno-stack-protector
-            ./Configure no-idea 'darwin-i386-cc:gcc-4.0:-iwithsysroot /Developer/SDKs/MacOSX10.4u.sdk' --prefix="$(pwd)/stage"
+            ./Configure no-idea 'darwin-i386-cc:gcc-4.0:-iwithsysroot /Developer/SDKs/MacOSX10.4u.sdk' --prefix="$stage"
             make depend
             make
             make install
         ;;
         "linux")
-			./Configure no-idea linux-generic32 -fno-stack-protector -m32 --prefix="$(pwd)/stage"
+			./Configure no-idea linux-generic32 -fno-stack-protector -m32 --prefix="$stage"
             make
             make install
         ;;
     esac
-    mkdir -p stage/LICENSES
-    cp LICENSE stage/LICENSES/openssl.txt
+    mkdir -p "$stage/LICENSES"
+    cp LICENSE "$stage/LICENSES/openssl.txt"
 cd "$top"
 
 pass
