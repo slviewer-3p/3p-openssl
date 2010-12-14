@@ -123,9 +123,9 @@
         </map>
       </map>
       <key>source_directory</key>
-      <string>openssl-0.9.8j</string>
+      <string>openssl-0.9.8q</string>
       <key>version</key>
-      <string>0.9.8j</string>
+      <string>0.9.8q</string>
     </map>
     <key>type</key>
     <string>autobuild</string>

@@ -5,11 +5,12 @@ set -x
 # make errors fatal
 set -e
 
-OPENSSL_VERSION="0.9.8j"
+OPENSSL_VERSION="0.9.8q"
 OPENSSL_SOURCE_DIR="openssl-$OPENSSL_VERSION"
 OPENSSL_ARCHIVE="$OPENSSL_SOURCE_DIR.tar.gz"
 OPENSSL_URL="http://www.openssl.org/source/$OPENSSL_ARCHIVE"
-OPENSSL_MD5="a5cb5f6c3d11affb387ecf7a997cac0c"  # for openssl-0.9.8j.tar.gz"
+#OPENSSL_MD5="a5cb5f6c3d11affb387ecf7a997cac0c"  # for openssl-0.9.8j.tar.gz"
+OPENSSL_MD5="80e67291bec9230f03eefb5cfe858998"   # for openssl-0.9.8q.tar.gz"
 
 if [ -z "$AUTOBUILD" ] ; then 
     fail
