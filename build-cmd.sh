@@ -64,7 +64,7 @@ cd "$OPENSSL_SOURCE_DIR"
             cp -r -L "include/openssl" "$stage/include/"
         ;;
         "darwin")
-            ./Configure no-idea 'darwin-i386-cc:gcc-4.0:-iwithsysroot /Developer/SDKs/MacOSX10.4u.sdk' --prefix="$stage"
+            ./Configure no-idea 'darwin-i386-cc' --prefix="$stage"
             make depend
             make
             make install
