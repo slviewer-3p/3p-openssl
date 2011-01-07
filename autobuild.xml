@@ -13,6 +13,8 @@
       <map>
         <key>common</key>
         <map>
+          <key>build_directory</key>
+          <string>stage</string>
           <key>configurations</key>
           <map>
             <key>default</key>
@@ -21,7 +23,7 @@
               <map>
                 <key>arguments</key>
                 <array>
-                  <string>./build-cmd.sh</string>
+                  <string>../build-cmd.sh</string>
                 </array>
                 <key>command</key>
                 <string>sh</string>
@@ -42,8 +44,6 @@
         </map>
         <key>darwin</key>
         <map>
-          <key>build_directory</key>
-          <string>./stage</string>
           <key>configurations</key>
           <map>
             <key>default</key>
@@ -67,8 +67,6 @@
         </map>
         <key>linux</key>
         <map>
-          <key>build_directory</key>
-          <string>./stage</string>
           <key>configurations</key>
           <map>
             <key>default</key>
@@ -92,8 +90,6 @@
         </map>
         <key>windows</key>
         <map>
-          <key>build_directory</key>
-          <string>./stage</string>
           <key>configurations</key>
           <map>
             <key>default</key>

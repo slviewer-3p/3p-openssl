@@ -1,5 +1,7 @@
 #!/bin/sh
 
+cd "$(dirname "$0")"
+
 # turn on verbose debugging output for parabuild logs.
 set -x
 # make errors fatal
