@@ -1,6 +1,4 @@
 syntax: glob
 build-*
 autobuild-parabuild-bootstrap/
-openssl-0.9.8q/
-openssl-0.9.8q.tar.gz
 stage/
