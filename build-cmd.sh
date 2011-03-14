@@ -63,9 +63,13 @@ cd "$OPENSSL_SOURCE_DIR"
             make install
         ;;
         "linux")
-			./Configure no-idea linux-generic32 -fno-stack-protector -m32 --prefix="$stage"
+			./Configure shared no-idea linux-generic32 -fno-stack-protector -m32 --prefix="$stage"
             make
             make install
+
+            mv "$stage/lib" "$stage/release"
+            mkdir -p "$stage/lib"
+            mv "$stage/release" "$stage/lib"
         ;;
     esac
     mkdir -p "$stage/LICENSES"

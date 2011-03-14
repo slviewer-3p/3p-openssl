@@ -82,8 +82,7 @@
           </map>
           <key>manifest</key>
           <array>
-            <string>lib/libcrypto.a</string>
-            <string>lib/libssl.a</string>
+            <string>lib/release/*.so*</string>
           </array>
           <key>name</key>
           <string>linux</string>
