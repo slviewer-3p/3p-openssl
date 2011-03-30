@@ -33,9 +33,7 @@ cd "$OPENSSL_SOURCE_DIR"
             # disable idea cypher per Phoenix's patent concerns (DEV-22827)
             perl Configure no-idea "VC-WIN32"
 
-            ./ms/do_masm.bat
-
-            patch ms/ntdll.mak < ../openssl-disable-manifest.patch
+            ./ms/do_nasm.bat
 
             # *TODO figure out why this step fails when I use cygwin perl instead of
             # ActiveState perl for the above configure
