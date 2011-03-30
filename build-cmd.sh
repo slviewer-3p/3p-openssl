@@ -7,7 +7,7 @@ set -x
 # make errors fatal
 set -e
 
-OPENSSL_VERSION="0.9.8q"
+OPENSSL_VERSION="1.0.0d"
 OPENSSL_SOURCE_DIR="openssl-$OPENSSL_VERSION"
 
 if [ -z "$AUTOBUILD" ] ; then 
@@ -57,7 +57,7 @@ cd "$OPENSSL_SOURCE_DIR"
             cp -r -L "include/openssl" "$stage/include/"
         ;;
         "darwin")
-            ./Configure no-idea 'darwin-i386-cc' --prefix="$stage"
+            ./Configure no-idea no-shared no-gost 'darwin-i386-cc' --prefix="$stage"
             make depend
             make
             make install
