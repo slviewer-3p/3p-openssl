@@ -68,6 +68,11 @@ cd "$OPENSSL_SOURCE_DIR"
             mv "$stage/lib" "$stage/release"
             mkdir -p "$stage/lib"
             mv "$stage/release" "$stage/lib"
+
+            # By default, 'make install' leaves even the user write bit off.
+            # This causes trouble for us down the road, along about the time
+            # the consuming build tries to strip libraries.
+            chmod u+w "$stage/lib/release"/libcrypto.so.* "$stage/lib/release"/libssl.so.*
         ;;
     esac
     mkdir -p "$stage/LICENSES"
