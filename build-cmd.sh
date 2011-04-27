@@ -33,7 +33,9 @@ cd "$OPENSSL_SOURCE_DIR"
             # disable idea cypher per Phoenix's patent concerns (DEV-22827)
             perl Configure no-idea "VC-WIN32"
 
-            ./ms/do_nasm.bat
+            # *TODO - looks like openssl dropped support for MASM, we should look into 
+            # getting it reenabled, or finding a way to support NASM
+            ./ms/do_ms.bat
 
             # *TODO figure out why this step fails when I use cygwin perl instead of
             # ActiveState perl for the above configure
