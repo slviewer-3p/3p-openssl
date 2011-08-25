@@ -118,7 +118,7 @@
         </map>
       </map>
       <key>source_directory</key>
-      <string>openssl-0.9.8q</string>
+      <string>openssl-1.0.0d</string>
       <key>version</key>
       <string>1.0.0d</string>
     </map>

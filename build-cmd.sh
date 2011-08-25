@@ -57,6 +57,10 @@ cd "$OPENSSL_SOURCE_DIR"
             cp -r -L "include/openssl" "$stage/include/"
         ;;
         "darwin")
+	    opts='-arch i386 -iwithsysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5'
+	    export CFLAGS="$opts"
+	    export CXXFLAGS="$opts"
+	    export LDFLAGS="$opts"
             ./Configure no-idea no-shared no-gost 'darwin-i386-cc' --prefix="$stage"
             make depend
             make
