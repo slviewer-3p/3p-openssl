@@ -83,6 +83,7 @@
           <key>manifest</key>
           <array>
             <string>lib/release/*.so*</string>
+            <string>lib/release/*.a</string>
           </array>
           <key>name</key>
           <string>linux</string>
