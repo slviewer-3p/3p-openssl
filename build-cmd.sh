@@ -7,7 +7,7 @@ set -x
 # make errors fatal
 set -e
 
-OPENSSL_VERSION="1.0.0d"
+OPENSSL_VERSION="1.0.0g"
 OPENSSL_SOURCE_DIR="openssl-$OPENSSL_VERSION"
 
 if [ -z "$AUTOBUILD" ] ; then 
