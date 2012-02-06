@@ -61,7 +61,7 @@ cd "$OPENSSL_SOURCE_DIR"
 	    export CFLAGS="$opts"
 	    export CXXFLAGS="$opts"
 	    export LDFLAGS="$opts"
-            ./Configure no-idea no-shared no-gost 'darwin-i386-cc' --prefix="$stage"
+            ./Configure no-idea no-shared no-gost 'debug-darwin-i386-cc' --prefix="$stage"
             make depend
             make
             make install
