@@ -67,7 +67,7 @@ cd "$OPENSSL_SOURCE_DIR"
             make install
         ;;
         "linux")
-			./Configure shared no-idea linux-generic32 -fno-stack-protector -m32 --prefix="$stage"
+            ./Configure shared no-idea linux-generic32 -fno-stack-protector -m32 --prefix="$stage"
             make
             make install
 
