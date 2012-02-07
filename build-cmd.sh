@@ -7,7 +7,7 @@ set -x
 # make errors fatal
 set -e
 
-OPENSSL_VERSION="1.0.0d"
+OPENSSL_VERSION="1.0.0g"
 OPENSSL_SOURCE_DIR="openssl-$OPENSSL_VERSION"
 
 if [ -z "$AUTOBUILD" ] ; then 
@@ -28,18 +28,15 @@ stage="$top/stage"
 cd "$OPENSSL_SOURCE_DIR"
     case "$AUTOBUILD_PLATFORM" in
         "windows")
-			load_vsvars
+            load_vsvars
 
             # disable idea cypher per Phoenix's patent concerns (DEV-22827)
-            perl Configure no-idea "VC-WIN32"
+            perl Configure VC-WIN32 no-asm no-idea
 
-            # *TODO - looks like openssl dropped support for MASM, we should look into 
-            # getting it reenabled, or finding a way to support NASM
+            # Not using NASM
             ./ms/do_ms.bat
 
-            # *TODO figure out why this step fails when I use cygwin perl instead of
-            # ActiveState perl for the above configure
-            nmake -f ms/ntdll.mak 
+            nmake -f ms/ntdll.mak
 
             mkdir -p "$stage/lib/debug"
             mkdir -p "$stage/lib/release"
@@ -53,14 +50,17 @@ cd "$OPENSSL_SOURCE_DIR"
             cp out32dll/{libeay32,ssleay32}.dll "$stage/lib/release"
 
             mkdir -p "$stage/include/openssl"
-            # *NOTE: the -L is important because they're symlinks in the openssl dist.
-            cp -r -L "include/openssl" "$stage/include/"
+
+            # These files are symlinks in the SSL dist but just show up as text files
+            # on windows that contain a string to their source.  So run some perl to
+            # copy the right files over.
+            perl ../copy-windows-links.pl "include/openssl" "$stage/include/openssl"
         ;;
         "darwin")
-	    opts='-arch i386 -iwithsysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5'
-	    export CFLAGS="$opts"
-	    export CXXFLAGS="$opts"
-	    export LDFLAGS="$opts"
+            opts='-arch i386 -iwithsysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5'
+            export CFLAGS="$opts"
+            export CXXFLAGS="$opts"
+            export LDFLAGS="$opts"
             ./Configure no-idea no-shared no-gost 'debug-darwin-i386-cc' --prefix="$stage"
             make depend
             make
