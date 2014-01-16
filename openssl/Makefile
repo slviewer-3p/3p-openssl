@@ -4,18 +4,18 @@
 ## Makefile for OpenSSL
 ##
 
-VERSION=1.0.0g
+VERSION=1.0.1e
 MAJOR=1
-MINOR=0.0
+MINOR=0.1
 SHLIB_VERSION_NUMBER=1.0.0
 SHLIB_VERSION_HISTORY=
 SHLIB_MAJOR=1
 SHLIB_MINOR=0.0
-SHLIB_EXT=.$(SHLIB_MAJOR).$(SHLIB_MINOR).dylib
-PLATFORM=darwin-i386-cc
-OPTIONS=--prefix=/Users/leslie/Work/3p/3p-openssl/stage no-gmp no-gost no-idea no-jpake no-krb5 no-md2 no-rc5 no-rfc3779 no-shared no-store no-zlib no-zlib-dynamic static-engine
-CONFIGURE_ARGS=no-idea no-shared no-gost darwin-i386-cc --prefix=/Users/leslie/Work/3p/3p-openssl/stage
-SHLIB_TARGET=darwin-shared
+SHLIB_EXT=
+PLATFORM=dist
+OPTIONS= no-ec_nistp_64_gcc_128 no-gmp no-jpake no-krb5 no-md2 no-rc5 no-rfc3779 no-sctp no-shared no-store no-zlib no-zlib-dynamic static-engine
+CONFIGURE_ARGS=dist
+SHLIB_TARGET=
 
 # HERE indicates where this Makefile lives.  This can be used to indicate
 # where sub-Makefiles are expected to be.  Currently has very limited usage,
@@ -26,10 +26,10 @@ HERE=.
 # for, say, /usr/ and yet have everything installed to /tmp/somedir/usr/.
 # Normally it is left empty.
 INSTALL_PREFIX=
-INSTALLTOP=/Users/leslie/Work/3p/3p-openssl/stage
+INSTALLTOP=/usr/local/ssl
 
 # Do not edit this manually. Use Configure --openssldir=DIR do change this!
-OPENSSLDIR=/Users/leslie/Work/3p/3p-openssl/stage/ssl
+OPENSSLDIR=/usr/local/ssl
 
 # NO_IDEA - Define to build without the IDEA algorithm
 # NO_RC4  - Define to build without the RC4 algorithm
@@ -59,10 +59,10 @@ OPENSSLDIR=/Users/leslie/Work/3p/3p-openssl/stage/ssl
 # equal 4.
 # PKCS1_CHECK - pkcs1 tests.
 
-CC= gcc
-CFLAG= -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -arch i386 -iwithsysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -O3 -fomit-frame-pointer -DL_ENDIAN -DOPENSSL_BN_ASM_PART_WORDS -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DRMD160_ASM -DAES_ASM -DWHIRLPOOL_ASM
-DEPFLAG= -DOPENSSL_NO_GMP -DOPENSSL_NO_GOST -DOPENSSL_NO_IDEA -DOPENSSL_NO_JPAKE -DOPENSSL_NO_MD2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_STORE
-PEX_LIBS= -Wl,-search_paths_first
+CC= cc
+CFLAG= -O
+DEPFLAG= -DOPENSSL_NO_EC_NISTP_64_GCC_128 -DOPENSSL_NO_GMP -DOPENSSL_NO_JPAKE -DOPENSSL_NO_MD2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_SCTP -DOPENSSL_NO_STORE
+PEX_LIBS= 
 EX_LIBS= 
 EXE_EXT= 
 ARFLAGS= 
@@ -71,8 +71,8 @@ RANLIB= /usr/bin/ranlib
 NM= nm
 PERL= /opt/local/bin/perl5
 TAR= tar
-TARFLAGS= --no-recursion
-MAKEDEPPROG= gcc
+TARFLAGS= --no-recursion --record-size=10240
+MAKEDEPPROG=makedepend
 LIBDIR=lib
 
 # We let the C compiler driver to take care of .s files. This is done in
@@ -88,20 +88,22 @@ ASFLAG=$(CFLAG)
 PROCESSOR= 
 
 # CPUID module collects small commonly used assembler snippets
-CPUID_OBJ= x86cpuid.o
-BN_ASM= bn-586.o co-586.o x86-mont.o
-DES_ENC= des-586.o crypt586.o
-AES_ENC= aes-586.o
-BF_ENC= bf-586.o
-CAST_ENC= cast-586.o
-RC4_ENC= rc4-586.o
-RC5_ENC= rc5-586.o
-MD5_ASM_OBJ= md5-586.o
-SHA1_ASM_OBJ= sha1-586.o sha256-586.o sha512-586.o
-RMD160_ASM_OBJ= rmd-586.o
-WP_ASM_OBJ= wp_block.o wp-mmx.o
-CMLL_ENC= cmll-x86.o
-PERLASM_SCHEME= macosx
+CPUID_OBJ= mem_clr.o
+BN_ASM= bn_asm.o
+DES_ENC= des_enc.o fcrypt_b.o
+AES_ENC= aes_core.o aes_cbc.o
+BF_ENC= bf_enc.o
+CAST_ENC= c_enc.o
+RC4_ENC= rc4_enc.o rc4_skey.o
+RC5_ENC= rc5_enc.o
+MD5_ASM_OBJ= 
+SHA1_ASM_OBJ= 
+RMD160_ASM_OBJ= 
+WP_ASM_OBJ= wp_block.o
+CMLL_ENC= camellia.o cmll_misc.o cmll_cbc.o
+MODES_ASM_OBJ= 
+ENGINES_ASM_OBJ= 
+PERLASM_SCHEME= 
 
 # KRB5 stuff
 KRB5_INCLUDES=
@@ -111,19 +113,43 @@ LIBKRB5=
 ZLIB_INCLUDE=
 LIBZLIB=
 
+# TOP level FIPS install directory.
+FIPSDIR=/usr/local/ssl/fips-2.0
+
+# This is the location of fipscanister.o and friends.
+# The FIPS module build will place it $(INSTALLTOP)/lib
+# but since $(INSTALLTOP) can only take the default value
+# when the module is built it will be in /usr/local/ssl/lib
+# $(INSTALLTOP) for this build may be different so hard
+# code the path.
+
+FIPSLIBDIR=
+
+# The location of the library which contains fipscanister.o
+# normally it will be libcrypto unless fipsdso is set in which
+# case it will be libfips. If not compiling in FIPS mode at all
+# this is empty making it a useful test for a FIPS compile.
+
+FIPSCANLIB=
+
+# Shared library base address. Currently only used on Windows.
+#
+
+BASEADDR=0xFB00000
+
 DIRS=   crypto ssl engines apps test tools
-ENGDIRS= 
+ENGDIRS= ccgost
 SHLIBDIRS= crypto ssl
 
 # dirs in crypto to build
 SDIRS=  \
 	objects \
 	md4 md5 sha mdc2 hmac ripemd whrlpool \
-	des aes rc2 rc4 bf cast camellia seed modes \
+	des aes rc2 rc4 idea bf cast camellia seed modes \
 	bn ec rsa dsa ecdsa dh ecdh dso engine \
 	buffer bio stack lhash rand err \
 	evp asn1 pem x509 x509v3 conf txt_db pkcs7 pkcs12 comp ocsp ui krb5 \
-	cms pqueue ts
+	cms pqueue ts srp cmac
 # keep in mind that the above list is adjusted by ./Configure
 # according to no-xxx arguments...
 
@@ -149,8 +175,8 @@ LIBS=   libcrypto.a libssl.a
 SHARED_CRYPTO=libcrypto$(SHLIB_EXT)
 SHARED_SSL=libssl$(SHLIB_EXT)
 SHARED_LIBS=
-SHARED_LIBS_LINK_EXTS=.$(SHLIB_MAJOR).dylib .dylib
-SHARED_LDFLAGS=-arch i386 -iwithsysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -dynamiclib
+SHARED_LIBS_LINK_EXTS=
+SHARED_LDFLAGS=
 
 GENERAL=        Makefile
 BASENAME=       openssl
@@ -174,7 +200,7 @@ CLEARENV=	TOP= && unset TOP $${LIB+LIB} $${LIBS+LIBS}	\
 		$${EXHEADER+EXHEADER} $${HEADER+HEADER}		\
 		$${GENERAL+GENERAL} $${CFLAGS+CFLAGS}		\
 		$${ASFLAGS+ASFLAGS} $${AFLAGS+AFLAGS}		\
-		$${LDCMD+LDCMD} $${LDFLAGS+LDFLAGS}		\
+		$${LDCMD+LDCMD} $${LDFLAGS+LDFLAGS} $${SCRIPTS+SCRIPTS}	\
 		$${SHAREDCMD+SHAREDCMD} $${SHAREDFLAGS+SHAREDFLAGS}	\
 		$${SHARED_LIB+SHARED_LIB} $${LIBEXTRAS+LIBEXTRAS}
 
@@ -206,7 +232,12 @@ BUILDENV=	PLATFORM='$(PLATFORM)' PROCESSOR='$(PROCESSOR)' \
 		MD5_ASM_OBJ='$(MD5_ASM_OBJ)'			\
 		RMD160_ASM_OBJ='$(RMD160_ASM_OBJ)'		\
 		WP_ASM_OBJ='$(WP_ASM_OBJ)'			\
+		MODES_ASM_OBJ='$(MODES_ASM_OBJ)'		\
+		ENGINES_ASM_OBJ='$(ENGINES_ASM_OBJ)'		\
 		PERLASM_SCHEME='$(PERLASM_SCHEME)'		\
+		FIPSLIBDIR='${FIPSLIBDIR}'			\
+		FIPSDIR='${FIPSDIR}'				\
+		FIPSCANLIB="$${FIPSCANLIB:-$(FIPSCANLIB)}"	\
 		THIS=$${THIS:-$@} MAKEFILE=Makefile MAKEOVERRIDES=
 # MAKEOVERRIDES= effectively "equalizes" GNU-ish and SysV-ish make flavors,
 # which in turn eliminates ambiguities in variable treatment with -e.
@@ -260,9 +291,20 @@ all_testapps: build_libs build_testapps
 build_testapps:
 	@dir=crypto; target=testapps; $(BUILD_ONE_CMD)
 
-libcrypto$(SHLIB_EXT): libcrypto.a
+fips_premain_dso$(EXE_EXT): libcrypto.a
+	[ -z "$(FIPSCANLIB)" ] || $(CC) $(CFLAG) -Iinclude \
+		-DFINGERPRINT_PREMAIN_DSO_LOAD -o $@  \
+		$(FIPSLIBDIR)fips_premain.c $(FIPSLIBDIR)fipscanister.o \
+		libcrypto.a $(EX_LIBS)
+
+libcrypto$(SHLIB_EXT): libcrypto.a fips_premain_dso$(EXE_EXT)
 	@if [ "$(SHLIB_TARGET)" != "" ]; then \
-		$(MAKE) SHLIBDIRS=crypto build-shared; \
+		if [ "$(FIPSCANLIB)" = "libcrypto" ]; then \
+			FIPSLD_LIBCRYPTO=libcrypto.a ; \
+			FIPSLD_CC="$(CC)"; CC=$(FIPSDIR)/bin/fipsld; \
+			export CC FIPSLD_CC FIPSLD_LIBCRYPTO; \
+		fi; \
+		$(MAKE) -e SHLIBDIRS=crypto build-shared; \
 	else \
 		echo "There's no support for shared libraries on this platform" >&2; \
 		exit 1; \
@@ -324,7 +366,8 @@ libcrypto.pc: Makefile
 	    echo 'Description: OpenSSL cryptography library'; \
 	    echo 'Version: '$(VERSION); \
 	    echo 'Requires: '; \
-	    echo 'Libs: -L$${libdir} -lcrypto $(EX_LIBS)'; \
+	    echo 'Libs: -L$${libdir} -lcrypto'; \
+	    echo 'Libs.private: $(EX_LIBS)'; \
 	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > libcrypto.pc
 
 libssl.pc: Makefile
@@ -337,7 +380,8 @@ libssl.pc: Makefile
 	    echo 'Description: Secure Sockets Layer and cryptography libraries'; \
 	    echo 'Version: '$(VERSION); \
 	    echo 'Requires: '; \
-	    echo 'Libs: -L$${libdir} -lssl -lcrypto $(EX_LIBS)'; \
+	    echo 'Libs: -L$${libdir} -lssl -lcrypto'; \
+	    echo 'Libs.private: $(EX_LIBS)'; \
 	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > libssl.pc
 
 openssl.pc: Makefile
@@ -350,7 +394,8 @@ openssl.pc: Makefile
 	    echo 'Description: Secure Sockets Layer and cryptography libraries and tools'; \
 	    echo 'Version: '$(VERSION); \
 	    echo 'Requires: '; \
-	    echo 'Libs: -L$${libdir} -lssl -lcrypto $(EX_LIBS)'; \
+	    echo 'Libs: -L$${libdir} -lssl -lcrypto'; \
+	    echo 'Libs.private: $(EX_LIBS)'; \
 	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > openssl.pc
 
 Makefile: Makefile.org Configure config
@@ -359,7 +404,7 @@ Makefile: Makefile.org Configure config
 	@false
 
 libclean:
-	rm -f *.map *.so *.so.* *.dll engines/*.so engines/*.dll *.a engines/*.a */lib */*/lib
+	rm -f *.map *.so *.so.* *.dylib *.dll engines/*.so engines/*.dll engines/*.dylib *.a engines/*.a */lib */*/lib
 
 clean:	libclean
 	rm -f shlib/*.o *.o core a.out fluff rehash.time testlog make.log cctest cctest.c
@@ -401,7 +446,7 @@ rehash.time: certs apps
 		[ -x "apps/openssl.exe" ] && OPENSSL="apps/openssl.exe" || :; \
 		OPENSSL_DEBUG_MEMORY=on; \
 		export OPENSSL OPENSSL_DEBUG_MEMORY; \
-		$(PERL) tools/c_rehash certs) && \
+		$(PERL) tools/c_rehash certs/demo) && \
 		touch rehash.time; \
 	else :; fi
 
@@ -426,9 +471,9 @@ tags:
 	find . -name '[^.]*.[ch]' | xargs etags -a
 
 errors:
+	$(PERL) util/ck_errf.pl -strict */*.c */*/*.c
 	$(PERL) util/mkerr.pl -recurse -write
 	(cd engines; $(MAKE) PERL=$(PERL) errors)
-	$(PERL) util/ck_errf.pl */*.c */*/*.c
 
 stacks:
 	$(PERL) util/mkstack.pl -write
@@ -511,7 +556,7 @@ install_sw:
 	chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i ); \
 	done;
 	@set -e; target=install; $(RECURSIVE_BUILD_CMD)
-	@set -e; for i in $(LIBS) ;\
+	@set -e; liblist="$(LIBS)"; for i in $$liblist ;\
 	do \
 		if [ -f "$$i" ]; then \
 		(       echo installing $$i; \
