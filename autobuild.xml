@@ -1,6 +1,57 @@
 <?xml version="1.0" ?>
 <llsd>
 <map>
+    <key>installables</key>
+    <map>
+      <key>zlib</key>
+      <map>
+        <key>license</key>
+        <string>zlib</string>
+        <key>license_file</key>
+        <string>LICENSES/zlib.txt</string>
+        <key>name</key>
+        <string>zlib</string>
+        <key>platforms</key>
+        <map>
+          <key>darwin</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>3f0a6ce335f390e3e74bf26d29a07070</string>
+              <key>url</key>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3p-zlib-update/rev/285355/arch/Darwin/installer/zlib-1.2.8-darwin-20140115.tar.bz2</string>
+            </map>
+            <key>name</key>
+            <string>darwin</string>
+          </map>
+          <key>linux</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>9c8db7295eca1f357d07e0dd27bf8668</string>
+              <key>url</key>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3p-zlib-update/rev/285355/arch/Linux/installer/zlib-1.2.8-linux-20140115.tar.bz2</string>
+            </map>
+            <key>name</key>
+            <string>linux</string>
+          </map>
+          <key>windows</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>923d08f7a713b1f0f8b855657b074828</string>
+              <key>url</key>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3p-zlib-update/rev/285355/arch/CYGWIN/installer/zlib-1.2.8-windows-20140115.tar.bz2</string>
+            </map>
+            <key>name</key>
+            <string>windows</string>
+          </map>
+        </map>
+      </map>
+    </map>
     <key>package_description</key>
     <map>
       <key>license</key>
@@ -23,10 +74,11 @@
               <map>
                 <key>arguments</key>
                 <array>
+                  <string>-c</string>
                   <string>../build-cmd.sh</string>
                 </array>
                 <key>command</key>
-                <string>sh</string>
+                <string>bash</string>
               </map>
               <key>default</key>
               <boolean>true</boolean>
@@ -59,8 +111,14 @@
           </map>
           <key>manifest</key>
           <array>
-            <string>lib/libcrypto.a</string>
-            <string>lib/libssl.a</string>
+            <string>lib/release/libcrypto.a</string>
+            <string>lib/release/libcrypto*dylib</string>
+            <string>lib/release/libssl.a</string>
+            <string>lib/release/libssl*dylib</string>
+            <string>lib/debug/libcrypto.a</string>
+            <string>lib/debug/libcrypto*dylib</string>
+            <string>lib/debug/libssl.a</string>
+            <string>lib/debug/libssl*dylib</string>
           </array>
           <key>name</key>
           <string>darwin</string>
@@ -84,6 +142,8 @@
           <array>
             <string>lib/release/*.so*</string>
             <string>lib/release/*.a</string>
+            <string>lib/debug/*.so*</string>
+            <string>lib/debug/*.a</string>
           </array>
           <key>name</key>
           <string>linux</string>
@@ -107,21 +167,25 @@
           <array>
             <string>lib/debug/libeay32.lib</string>
             <string>lib/debug/libeay32.dll</string>
+            <string>lib/debug/libeay32.?db</string>
             <string>lib/debug/ssleay32.lib</string>
             <string>lib/debug/ssleay32.dll</string>
+            <string>lib/debug/ssleay32.?db</string>
             <string>lib/release/libeay32.lib</string>
             <string>lib/release/libeay32.dll</string>
+            <string>lib/release/libeay32.?db</string>
             <string>lib/release/ssleay32.lib</string>
             <string>lib/release/ssleay32.dll</string>
+            <string>lib/release/ssleay32.?db</string>
           </array>
           <key>name</key>
           <string>windows</string>
         </map>
       </map>
       <key>source_directory</key>
-      <string>openssl-1.0.0g</string>
+      <string>openssl</string>
       <key>version</key>
-      <string>1.0.0g</string>
+      <string>1.0.1e</string>
     </map>
     <key>type</key>
     <string>autobuild</string>
