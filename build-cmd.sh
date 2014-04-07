@@ -23,6 +23,27 @@ set +x
 eval "$("$AUTOBUILD" source_environment)"
 set -x
 
+# Restore all .sos
+restore_sos ()
+{
+    for solib in "${stage}"/packages/lib/{debug,release}/*.so*.disable; do
+        if [ -f "$solib" ]; then
+            mv -f "$solib" "${solib%.disable}"
+        fi
+    done
+}
+
+
+# Restore all .dylibs
+restore_dylibs ()
+{
+    for dylib in "$stage/packages/lib"/{debug,release}/*.dylib.disable; do
+        if [ -f "$dylib" ]; then
+            mv "$dylib" "${dylib%.disable}"
+        fi
+    done
+}
+
 top="$(pwd)"
 stage="$top/stage"
 [ -f "$stage"/packages/include/zlib/zlib.h ] || fail "You haven't installed packages yet."
@@ -114,6 +135,7 @@ case "$AUTOBUILD_PLATFORM" in
             ssl_install_name="@executable_path/../Resources/${ssl_target_name}"
 
             # Force static linkage by moving .dylibs out of the way
+            trap restore_dylibs EXIT
             for dylib in "$stage/packages/lib"/{debug,release}/*.dylib; do
                 if [ -f "$dylib" ]; then
                     mv "$dylib" "$dylib".disable
@@ -138,11 +160,10 @@ case "$AUTOBUILD_PLATFORM" in
             # linked again wiping out the install_name.
             crypto_stage_name="${stage}/lib/debug/${crypto_target_name}"
             ssl_stage_name="${stage}/lib/debug/${ssl_target_name}"
-            chmod +w "${crypto_stage_name}" "${ssl_stage_name}"
+            chmod u+w "${crypto_stage_name}" "${ssl_stage_name}"
             install_name_tool -id "${ssl_install_name}" "${ssl_stage_name}"
             install_name_tool -id "${crypto_install_name}" "${crypto_stage_name}"
             install_name_tool -change "${crypto_stage_name}" "${crypto_install_name}" "${ssl_stage_name}"
-            chmod -w "${crypto_stage_name}" "${ssl_stage_name}"
 
             # conditionally run unit tests
             if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
@@ -162,11 +183,10 @@ case "$AUTOBUILD_PLATFORM" in
             # Modify .dylib path information
             crypto_stage_name="${stage}/lib/release/${crypto_target_name}"
             ssl_stage_name="${stage}/lib/release/${ssl_target_name}"
-            chmod +w "${crypto_stage_name}" "${ssl_stage_name}"
+            chmod u+w "${crypto_stage_name}" "${ssl_stage_name}"
             install_name_tool -id "${ssl_install_name}" "${ssl_stage_name}"
             install_name_tool -id "${crypto_install_name}" "${crypto_stage_name}"
             install_name_tool -change "${crypto_stage_name}" "${crypto_install_name}" "${ssl_stage_name}"
-            chmod -w "${crypto_stage_name}" "${ssl_stage_name}"
 
             # conditionally run unit tests
             if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
@@ -174,16 +194,24 @@ case "$AUTOBUILD_PLATFORM" in
             fi
 
             make clean
-
-            # Restore zlib .dylibs
-            for dylib in "$stage/packages/lib"/{debug,release}/*.dylib.disable; do
-                if [ -f "$dylib" ]; then
-                    mv "$dylib" "${dylib%.disable}"
-                fi
-            done
         ;;
 
         "linux")
+            # Linux build environment at Linden comes pre-polluted with stuff that can
+            # seriously damage 3rd-party builds.  Environmental garbage you can expect
+            # includes:
+            #
+            #    DISTCC_POTENTIAL_HOSTS     arch           root        CXXFLAGS
+            #    DISTCC_LOCATION            top            branch      CC
+            #    DISTCC_HOSTS               build_name     suffix      CXX
+            #    LSDISTCC_ARGS              repo           prefix      CFLAGS
+            #    cxx_version                AUTOBUILD      SIGN        CPPFLAGS
+            #
+            # So, clear out bits that shouldn't affect our configure-directed build
+            # but which do nonetheless.
+            #
+            # unset DISTCC_HOSTS CC CXX CFLAGS CPPFLAGS CXXFLAGS
+
             # Prefer gcc-4.6 if available.
             if [ -x /usr/bin/gcc-4.6 -a -x /usr/bin/g++-4.6 ]; then
                 export CC=/usr/bin/gcc-4.6
@@ -203,6 +231,7 @@ case "$AUTOBUILD_PLATFORM" in
             fi
             
             # Force static linkage to libz by moving .sos out of the way
+            trap restore_sos EXIT
             for solib in "${stage}"/packages/lib/debug/*.so* "${stage}"/packages/lib/release/*.so*; do
                 if [ -f "$solib" ]; then
                     mv -f "$solib" "$solib".disable
@@ -246,15 +275,9 @@ case "$AUTOBUILD_PLATFORM" in
 
             # By default, 'make install' leaves even the user write bit off.
             # This causes trouble for us down the road, along about the time
-            # the consuming build tries to strip libraries.
-            # chmod u+w "$stage/lib/release"/libcrypto.so.* "$stage/lib/release"/libssl.so.*
-
-            # Restore libz .sos
-            for solib in "${stage}"/packages/lib/debug/*.so*.disable "${stage}"/packages/lib/release/*.so*.disable; do
-                if [ -f "$solib" ]; then
-                    mv -f "$solib" "${solib%.disable}"
-                fi
-            done
+            # the consuming build tries to strip libraries.  It's easier to
+            # make writable here than fix the viewer packaging.
+            chmod u+w "$stage"/lib/{release,debug}/lib{crypto,ssl}.so*
         ;;
     esac
     mkdir -p "$stage/LICENSES"

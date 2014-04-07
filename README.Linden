@@ -31,6 +31,8 @@
 
     [ ]  Did everything build PIC on *nix?
 
+    [ ]  Do the built shared libraries have u+w permissions on Linux?
+
     [ ]  Did the libraries pick up the correct version of zlib?  You
          can run 'strings' over them (e.g. stage/lib/release/
          libcrypto.1.0.0.dylib) and grep for the zlib version string
