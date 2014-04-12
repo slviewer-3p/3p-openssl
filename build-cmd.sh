@@ -141,8 +141,16 @@ case "$AUTOBUILD_PLATFORM" in
                     mv "$dylib" "$dylib".disable
                 fi
             done
+
+            # Select SDK with full path.  This shouldn't have much effect on this
+            # build but adding to establish a consistent pattern.
+            #
+            # sdk=/Developer/SDKs/MacOSX10.6.sdk/
+            # sdk=/Developer/SDKs/MacOSX10.7.sdk/
+            # sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/
+            sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/
             
-            opts="${TARGET_OPTS}:--arch i386 -iwithsysroot /Developer/SDKs/MacOSX10.7.sdk -mmacosx-version-min=10.6}"
+            opts="${TARGET_OPTS}:--arch i386 -iwithsysroot $sdk -mmacosx-version-min=10.6}"
             export CFLAGS="$opts -gdwarf-2"
             export CXXFLAGS="$opts -gdwarf-2"
             export LDFLAGS="-Wl,-headerpad_max_install_names"

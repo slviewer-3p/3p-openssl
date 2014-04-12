@@ -38,6 +38,29 @@
          libcrypto.1.0.0.dylib) and grep for the zlib version string
          (currently "1.2.8").
 
+         $ strings stage/lib/release/libcrypto.*  | grep 1\\.[0-9]\\.
+         OpenSSL 1.0.1g 7 Apr 2014
+         MD4 part of OpenSSL 1.0.1g 7 Apr 2014
+         ...
+         TXT_DB part of OpenSSL 1.0.1g 7 Apr 2014
+         1.2.8
+         libcrypto.so.1.0.0
+         OpenSSL 1.0.1g 7 Apr 2014
+         MD4 part of OpenSSL 1.0.1g 7 Apr 2014
+         ...
+         TXT_DB part of OpenSSL 1.0.1g 7 Apr 2014
+         1.2.8
+          deflate 1.2.8 Copyright 1995-2013 Jean-loup Gailly and Mark Adler 
+          inflate 1.2.8 Copyright 1995-2013 Mark Adler 
+         libcrypto.so.1.0.0
+         OpenSSL 1.0.1g 7 Apr 2014
+         MD4 part of OpenSSL 1.0.1g 7 Apr 2014
+         ...
+         TXT_DB part of OpenSSL 1.0.1g 7 Apr 2014
+         1.2.8
+          deflate 1.2.8 Copyright 1995-2013 Jean-loup Gailly and Mark Adler 
+          inflate 1.2.8 Copyright 1995-2013 Mark Adler 
+
     [ ]  Does the openssl program (stage/bin/openssl) run as expected
          after any necessary library setup?  On Mac, you'll need to do
          some special staging setup to run it as the .dylib's now
@@ -93,6 +116,11 @@
 
 3.  Source Origin
 
+    1.0.1g:
+
+      http://www.openssl.org/source/openssl-1.0.1g.tar.gz
+      MD5:  de62b43dfcd858e66a74bee1c834e959
+
     1.0.1e:
 
       http://www.openssl.org/source/openssl-1.0.1e.tar.gz
@@ -122,31 +150,35 @@
     Mac OS X (debug and release):
     (Dylibs built against a libz.a archive.)
     * lib/release/libcrypto.a
+    * lib/release/libssl.a
+    * lib/debug/libcrypto.a
+    * lib/debug/libssl.a
+
+    Mac OS X (build but not packaged):
     * lib/release/libcrypto.1.0.0.dylib (dylib - link target - install
       path:  @executable_path/../Release/libcrypto.1.0.0.dylib)
     * lib/release/libcrypto.dylib (symlink)
-    * lib/release/libssl.a
     * lib/release/libssl.1.0.0.dylib
     * lib/release/libssl.dylib
-    * lib/debug/libcrypto.a
     * lib/debug/libcrypto.1.0.0.dylib
     * lib/debug/libcrypto.dylib
-    * lib/debug/libssl.a
     * lib/debug/libssl.1.0.0.dylib
     * lib/debug/libssl.dylib
 
     Linux (debug and release):
-    (Shared libraries build against a libz.a archive.)
     * lib/release/libcrypto.a
+    * lib/release/libssl.a
+    * lib/debug/libcrypto.a
+    * lib/debug/libssl.a
+
+    Linux (built but not packaged):
+    (Shared libraries build against a libz.a archive.)
     * lib/release/libcrypto.so (symlink)
     * lib/release/libcrypto.so.1.0.0 (shared library)
-    * lib/release/libssl.a
     * lib/release/libssl.so
     * lib/release/libssl.so.1.0.0
-    * lib/debug/libcrypto.a
     * lib/debug/libcrypto.so
     * lib/debug/libcrypto.so.1.0.0
-    * lib/debug/libssl.a
     * lib/debug/libssl.so
     * lib/debug/libssl.so.1.0.0
 

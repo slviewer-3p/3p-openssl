@@ -18,9 +18,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>3f0a6ce335f390e3e74bf26d29a07070</string>
+              <string>c6666f9231da49dac7388a306beca450</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3p-zlib-update/rev/285355/arch/Darwin/installer/zlib-1.2.8-darwin-20140115.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3pl_3p-zlib-update/rev/288987/arch/Darwin/installer/zlib-1.2.8-darwin-20140411.tar.bz2</string>
             </map>
             <key>name</key>
             <string>darwin</string>
@@ -30,9 +30,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>9c8db7295eca1f357d07e0dd27bf8668</string>
+              <string>585880fa78da054739e3c60d3bd29bd2</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3p-zlib-update/rev/285355/arch/Linux/installer/zlib-1.2.8-linux-20140115.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3pl_3p-zlib-update/rev/288987/arch/Linux/installer/zlib-1.2.8-linux-20140412.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
@@ -42,9 +42,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>923d08f7a713b1f0f8b855657b074828</string>
+              <string>5f23fb919a365b19a3d5e1ba2f57436a</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3p-zlib-update/rev/285355/arch/CYGWIN/installer/zlib-1.2.8-windows-20140115.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3pl_3p-zlib-update/rev/288987/arch/CYGWIN/installer/zlib-1.2.8-windows-20140411.tar.bz2</string>
             </map>
             <key>name</key>
             <string>windows</string>
@@ -112,13 +112,9 @@
           <key>manifest</key>
           <array>
             <string>lib/release/libcrypto.a</string>
-            <string>lib/release/libcrypto*dylib</string>
             <string>lib/release/libssl.a</string>
-            <string>lib/release/libssl*dylib</string>
             <string>lib/debug/libcrypto.a</string>
-            <string>lib/debug/libcrypto*dylib</string>
             <string>lib/debug/libssl.a</string>
-            <string>lib/debug/libssl*dylib</string>
           </array>
           <key>name</key>
           <string>darwin</string>
@@ -140,9 +136,7 @@
           </map>
           <key>manifest</key>
           <array>
-            <string>lib/release/*.so*</string>
             <string>lib/release/*.a</string>
-            <string>lib/debug/*.so*</string>
             <string>lib/debug/*.a</string>
           </array>
           <key>name</key>
@@ -185,7 +179,7 @@
       <key>source_directory</key>
       <string>openssl</string>
       <key>version</key>
-      <string>1.0.1e</string>
+      <string>1.0.1g</string>
     </map>
     <key>type</key>
     <string>autobuild</string>
