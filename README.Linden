@@ -76,7 +76,7 @@
         $ ln -s ../lib/debug/* .     # or release/*
         $ popd
         $ stage/bin/openssl version
-        OpenSSL 1.0.1e 11 Feb 2013
+        OpenSSL 1.0.1g 7 Apr 2014
         $ 
 
 
@@ -148,13 +148,13 @@
     * lib/release/ssleay32.pdb
 
     Mac OS X (debug and release):
-    (Dylibs built against a libz.a archive.)
     * lib/release/libcrypto.a
     * lib/release/libssl.a
     * lib/debug/libcrypto.a
     * lib/debug/libssl.a
 
     Mac OS X (build but not packaged):
+    (Dylibs built against a libz.a archive.)
     * lib/release/libcrypto.1.0.0.dylib (dylib - link target - install
       path:  @executable_path/../Release/libcrypto.1.0.0.dylib)
     * lib/release/libcrypto.dylib (symlink)
@@ -181,6 +181,21 @@
     * lib/debug/libcrypto.so.1.0.0
     * lib/debug/libssl.so
     * lib/debug/libssl.so.1.0.0
+
+
+5.  Consumers/Dependents
+
+    Packages dependent on OpenSSL which will need attention
+    (autobuild.xml) after changes.  This is not authoritative, use
+    appropriate build tools to find all dependents.
+
+    * curl
+
+    * llqtwebkit
+    * openjpeg (*can* be a dependency via curl when building
+      certain tools)
+
+    * viewer
 
 
 ===================================================================

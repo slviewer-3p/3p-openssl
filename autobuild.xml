@@ -18,9 +18,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>c6666f9231da49dac7388a306beca450</string>
+              <string>44f898ad513cc40ace8609073a594fa5</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3pl_3p-zlib-update/rev/288987/arch/Darwin/installer/zlib-1.2.8-darwin-20140411.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3pl_3p-zlib-update/rev/290080/arch/Darwin/installer/zlib-1.2.8-darwin-20140515.tar.bz2</string>
             </map>
             <key>name</key>
             <string>darwin</string>
@@ -30,9 +30,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>585880fa78da054739e3c60d3bd29bd2</string>
+              <string>8db178c604df50682d85bb8a78065903</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3pl_3p-zlib-update/rev/288987/arch/Linux/installer/zlib-1.2.8-linux-20140412.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3pl_3p-zlib-update/rev/290080/arch/Linux/installer/zlib-1.2.8-linux-20140515.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
@@ -42,9 +42,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>5f23fb919a365b19a3d5e1ba2f57436a</string>
+              <string>99157bfc04655ca870d4c5ddd4358f34</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3pl_3p-zlib-update/rev/288987/arch/CYGWIN/installer/zlib-1.2.8-windows-20140411.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3pl_3p-zlib-update/rev/290080/arch/CYGWIN/installer/zlib-1.2.8-windows-20140515.tar.bz2</string>
             </map>
             <key>name</key>
             <string>windows</string>
@@ -58,6 +58,10 @@
       <string>openssl</string>
       <key>license_file</key>
       <string>LICENSES/openssl.txt</string>
+      <key>copyright</key>
+      <string>Copyright (c) 1998-2011 The OpenSSL Project.  All rights reserved; Copyright (C) 1995-1998 Eric Young (eay@cryptsoft.com)</string>
+      <key>description</key>
+      <string>Secure Sockets Layer (SSL v2/v3) and Transport Layer Security (TLS v1) Library</string>
       <key>name</key>
       <string>openssl</string>
       <key>platforms</key>
@@ -90,6 +94,7 @@
           <array>
             <string>include/openssl/*.h</string>
             <string>LICENSES/openssl.txt</string>
+            <string>docs/openssl/README.Linden</string>
           </array>
           <key>name</key>
           <string>common</string>

@@ -7,7 +7,7 @@ set -x
 # make errors fatal
 set -e
 
-OPENSSL_VERSION="1.0.1e"
+OPENSSL_VERSION="1.0.1g"
 OPENSSL_SOURCE_DIR="openssl"
 
 if [ -z "$AUTOBUILD" ] ; then 
@@ -48,8 +48,8 @@ top="$(pwd)"
 stage="$top/stage"
 [ -f "$stage"/packages/include/zlib/zlib.h ] || fail "You haven't installed packages yet."
 
-cd "$OPENSSL_SOURCE_DIR"
-case "$AUTOBUILD_PLATFORM" in
+pushd "$OPENSSL_SOURCE_DIR"
+    case "$AUTOBUILD_PLATFORM" in
 
         "windows")
             load_vsvars
@@ -150,7 +150,7 @@ case "$AUTOBUILD_PLATFORM" in
             # sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/
             sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/
             
-            opts="${TARGET_OPTS}:--arch i386 -iwithsysroot $sdk -mmacosx-version-min=10.6}"
+            opts="${TARGET_OPTS:--arch i386 -iwithsysroot $sdk -mmacosx-version-min=10.6}"
             export CFLAGS="$opts -gdwarf-2"
             export CXXFLAGS="$opts -gdwarf-2"
             export LDFLAGS="-Wl,-headerpad_max_install_names"
@@ -290,7 +290,10 @@ case "$AUTOBUILD_PLATFORM" in
     esac
     mkdir -p "$stage/LICENSES"
     cp -a LICENSE "$stage/LICENSES/openssl.txt"
-cd "$top"
+popd
+
+mkdir -p "$stage"/docs/openssl/
+cp -a README.Linden "$stage"/docs/openssl/
 
 pass
 
