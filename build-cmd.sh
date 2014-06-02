@@ -150,6 +150,10 @@ pushd "$OPENSSL_SOURCE_DIR"
             # sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/
             sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/
             
+            # Keep min version back at 10.5 if you are using the
+            # old llqtwebkit repo which builds on 10.5 systems.
+            # At 10.6, zlib will start using __bzero() which doesn't
+            # exist there.
             opts="${TARGET_OPTS:--arch i386 -iwithsysroot $sdk -mmacosx-version-min=10.6}"
             export CFLAGS="$opts -gdwarf-2"
             export CXXFLAGS="$opts -gdwarf-2"
