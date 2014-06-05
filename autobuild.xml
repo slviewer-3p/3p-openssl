@@ -184,7 +184,7 @@
       <key>source_directory</key>
       <string>openssl</string>
       <key>version</key>
-      <string>1.0.1g</string>
+      <string>1.0.1h</string>
     </map>
     <key>type</key>
     <string>autobuild</string>
