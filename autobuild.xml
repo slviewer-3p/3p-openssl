@@ -5,6 +5,10 @@
     <map>
       <key>zlib</key>
       <map>
+        <key>copyright</key>
+        <string>Copyright (C) 1995-2013 Jean-loup Gailly and Mark Adler</string>
+        <key>description</key>
+        <string>Zlib Data Compression Library</string>
         <key>license</key>
         <string>zlib</string>
         <key>license_file</key>
@@ -30,9 +34,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>63a62bb3cbef2aad3cca49cb6f2d0aeb</string>
+              <string>973531315bda23042e12a4e814728ab5</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3pl_3p-zlib-update/rev/290556/arch/Linux/installer/zlib-1.2.8-linux-20140602.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/zlib_3p-update-zlib/rev/295314/arch/Linux/installer/zlib-1.2.8.295314-linux-295314.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
@@ -50,6 +54,8 @@
             <string>windows</string>
           </map>
         </map>
+        <key>version</key>
+        <string>1.2.8.295314</string>
       </map>
     </map>
     <key>package_description</key>
