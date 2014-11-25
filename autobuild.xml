@@ -22,9 +22,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>f5d74ecd3e070fa27d1063e2bc7df2e5</string>
+              <string>1a79eeac199c2d94e4ae4e5d0194e25f</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/zlib_3p-update-zlib/rev/296302/arch/Darwin/installer/zlib-1.2.8.296302-darwin-296302.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/zlib_3p-update-zlib/rev/296881/arch/Darwin/installer/zlib-1.2.8.296881-darwin-296881.tar.bz2</string>
             </map>
             <key>name</key>
             <string>darwin</string>
@@ -34,9 +34,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>500c7801f21f525c8924939e82d71a30</string>
+              <string>2eb8e59b6464222dcf4435016ad5f618</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/zlib_3p-update-zlib/rev/296302/arch/Linux/installer/zlib-1.2.8.296302-linux-296302.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/zlib_3p-update-zlib/rev/296881/arch/Linux/installer/zlib-1.2.8.296881-linux-296881.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
@@ -46,16 +46,16 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>00de2300bafe083b61bbe42e5a0f40a8</string>
+              <string>ae420ec6d30411c07aac2502d7bbc0f3</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/zlib_3p-update-zlib/rev/296302/arch/CYGWIN/installer/zlib-1.2.8.296302-windows-296302.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/zlib_3p-update-zlib/rev/296881/arch/CYGWIN/installer/zlib-1.2.8.296881-windows-296881.tar.bz2</string>
             </map>
             <key>name</key>
             <string>windows</string>
           </map>
         </map>
         <key>version</key>
-        <string>1.2.8.296302</string>
+        <string>1.2.8.296881</string>
       </map>
     </map>
     <key>package_description</key>
