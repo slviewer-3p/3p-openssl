@@ -201,12 +201,6 @@ pushd "$OPENSSL_SOURCE_DIR"
             fi
 
             make clean
-            # Not sure if this should be covered by 'make clean', but
-            # empirically the second 'make install' seems to work better if we
-            # forcibly remove the man directory tree first. Unless we do that,
-            # we get weird errors of the form "Too many levels of symbolic
-            # links" for one of the man pages.
-            rm -rf "$stage/share/man"
 
             # Release last
             ./Configure zlib threads no-idea shared no-gost 386 'darwin-i386-cc' \
