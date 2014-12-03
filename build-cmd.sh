@@ -183,7 +183,11 @@ pushd "$OPENSSL_SOURCE_DIR"
                 --with-zlib-include="$stage/packages/include/zlib" --with-zlib-lib="$stage/packages/lib/debug"
             make depend
             make
-            make install
+            # Avoid plain 'make install' because, at least on Yosemite,
+            # installing the man pages into the staging area creates problems
+            # due to the number of symlinks. Thanks to Cinder for suggesting
+            # this make target.
+            make install_sw
 
             # Modify .dylib path information.  Do this after install
             # to the copies rather than built or the dylib's will be
@@ -208,7 +212,11 @@ pushd "$OPENSSL_SOURCE_DIR"
                 --with-zlib-include="$stage/packages/include/zlib" --with-zlib-lib="$stage/packages/lib/release"
             make depend
             make
-            make install
+            # Avoid plain 'make install' because, at least on Yosemite,
+            # installing the man pages into the staging area creates problems
+            # due to the number of symlinks. Thanks to Cinder for suggesting
+            # this make target.
+            make install_sw
 
             # Modify .dylib path information
             crypto_stage_name="${stage}/lib/release/${crypto_target_name}"
