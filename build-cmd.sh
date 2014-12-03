@@ -7,9 +7,6 @@ set -x
 # make errors fatal
 set -e
 
-OPENSSL_VERSION="1.0.1h"
-OPENSSL_SOURCE_DIR="openssl"
-
 if [ -z "$AUTOBUILD" ] ; then
     fail
 fi
@@ -50,7 +47,13 @@ stage="$top/stage"
 [ -f "$stage"/packages/include/zlib/zlib.h ] || fail "You haven't installed packages yet."
 
 OPENSSL_SOURCE_DIR="openssl"
-raw_version=$(perl -ne 's/#\s*define\s+OPENSSL_VERSION_NUMBER\s+([\d]+)/$1/ && print' "${OPENSSL_SOURCE_DIR}/include/openssl/opensslv.h")
+# Look in crypto/opensslv.h instead of the more obvious
+# include/openssl/opensslv.h because the latter is (supposed to be) a symlink
+# to the former. That works on Mac and Linux but not Windows: on Windows we
+# get a plain text file containing the relative path to crypto/opensslv.h, and
+# a very strange "version number" because perl can't find
+# OPENSSL_VERSION_NUMBER. (Sigh.)
+raw_version=$(perl -ne 's/#\s*define\s+OPENSSL_VERSION_NUMBER\s+([\d]+)/$1/ && print' "${OPENSSL_SOURCE_DIR}/crypto/opensslv.h")
 
 major_version=$(echo ${raw_version:2:1})
 minor_version=$((10#$(echo ${raw_version:3:2})))
