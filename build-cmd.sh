@@ -72,51 +72,29 @@ echo "${version_str}.${build}" > "${stage}/VERSION.txt"
 pushd "$OPENSSL_SOURCE_DIR"
     case "$AUTOBUILD_PLATFORM" in
 
-        "windows")
+        windows*)
             load_vsvars
 
-            mkdir -p "$stage/lib/debug"
             mkdir -p "$stage/lib/release"
 
-            # Debug build:
-            # disable idea cypher per Phoenix's patent concerns (DEV-22827)
-            # crypto/cversion.c attempts to convert the full 'cl' command line into a
-            # c-string without escaping characters.  This fails and confuses the compiler
-            # so we use the 'NO_WINDOWS_BRAINDEATH' define.  Would be an ideal use case
-            # for raw strings.
-            perl Configure debug-VC-WIN32 no-asm no-idea zlib threads -DNO_WINDOWS_BRAINDEATH \
-                --with-zlib-include="$(cygpath -w "$stage/packages/include/zlib")" \
-                --with-zlib-lib="$(cygpath -w "$stage/packages/lib/debug/zlibd.lib")"
+            if [ "$AUTOBUILD_ADDRSIZE" = 32 ]
+            then
+                # disable idea cypher per Phoenix's patent concerns (DEV-22827)
+                perl Configure VC-WIN32 no-asm no-idea zlib threads -DNO_WINDOWS_BRAINDEATH \
+                    --with-zlib-include="$(cygpath -w "$stage/packages/include/zlib")" \
+                    --with-zlib-lib="$(cygpath -w "$stage/packages/lib/release/zlib.lib")"
 
-            # Not using NASM
-            ./ms/do_ms.bat
+                # Not using NASM
+                ./ms/do_ms.bat
+            else
+                # disable idea cypher per Phoenix's patent concerns (DEV-22827)
+                perl Configure VC-WIN64A no-asm no-idea zlib threads -DNO_WINDOWS_BRAINDEATH \
+                    --with-zlib-include="$(cygpath -w "$stage/packages/include/zlib")" \
+                    --with-zlib-lib="$(cygpath -w "$stage/packages/lib/release/zlib.lib")"
 
-            nmake -f ms/ntdll.mak
-
-            # conditionally run unit tests
-            if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
-                pushd out32dll.dbg
-                    # linden_test.bat is a clone of test.bat with unavailable
-                    # tests removed and the return status changed to fail if a problem occurs.
-                    ../ms/linden_test.bat
-                popd
+                # Not using NASM
+                ./ms/do_win64a.bat
             fi
-
-            cp -a out32dll.dbg/{libeay32,ssleay32}.lib "$stage/lib/debug"
-            cp -a out32dll.dbg/{libeay32,ssleay32}.dll "$stage/lib/debug"
-            cp -a out32dll.dbg/{libeay32,ssleay32}.pdb "$stage/lib/debug"
-
-            # Clean
-            nmake -f ms/ntdll.mak vclean
-
-            # Release build:
-            # disable idea cypher per Phoenix's patent concerns (DEV-22827)
-            perl Configure VC-WIN32 no-asm no-idea zlib threads -DNO_WINDOWS_BRAINDEATH \
-                --with-zlib-include="$(cygpath -w "$stage/packages/include/zlib")" \
-                --with-zlib-lib="$(cygpath -w "$stage/packages/lib/release/zlib.lib")"
-
-            # Not using NASM
-            ./ms/do_ms.bat
 
             nmake -f ms/ntdll.mak
 
