@@ -29,26 +29,50 @@
             <key>name</key>
             <string>darwin</string>
           </map>
+          <key>darwin64</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>928ddd6273308e0d4af8674f36c7dd98</string>
+              <key>url</key>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/canonical_3p-zlib/rev/312019/arch/Darwin/installer/zlib-1.2.8.312019-darwin64-312019.tar.bz2</string>
+            </map>
+            <key>name</key>
+            <string>darwin64</string>
+          </map>
           <key>linux</key>
           <map>
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>2eb8e59b6464222dcf4435016ad5f618</string>
+              <string>ce741bfd9c998715fc37201032fa3a1f</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/zlib_3p-update-zlib/rev/296881/arch/Linux/installer/zlib-1.2.8.296881-linux-296881.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/canonical_3p-zlib/rev/312019/arch/Linux/installer/zlib-1.2.8.312019-linux-312019.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
+          </map>
+          <key>linux64</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>416e4477951361ff0d5bb3380555fec0</string>
+              <key>url</key>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/canonical_3p-zlib/rev/312019/arch/Linux/installer/zlib-1.2.8.312019-linux64-312019.tar.bz2</string>
+            </map>
+            <key>name</key>
+            <string>linux64</string>
           </map>
           <key>windows</key>
           <map>
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>ae420ec6d30411c07aac2502d7bbc0f3</string>
+              <string>710061c6f154537d2e3d0306c10843c2</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/zlib_3p-update-zlib/rev/296881/arch/CYGWIN/installer/zlib-1.2.8.296881-windows-296881.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/canonical_3p-zlib/rev/312019/arch/CYGWIN/installer/zlib-1.2.8.312019-windows-312019.tar.bz2</string>
             </map>
             <key>name</key>
             <string>windows</string>
@@ -58,16 +82,16 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>b85fefbb692b9049c65a8f118aa58f16</string>
+              <string>287f61674bde4a0325bae5ab5a50d931</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/canonical_3p-zlib/rev/311487/arch/CYGWIN/installer/zlib-1.2.8.311487-windows64-311487.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/canonical_3p-zlib/rev/312019/arch/CYGWIN/installer/zlib-1.2.8.312019-windows64-312019.tar.bz2</string>
             </map>
             <key>name</key>
             <string>windows64</string>
           </map>
         </map>
         <key>version</key>
-        <string>1.2.8.296881</string>
+        <string>1.2.8.312019</string>
       </map>
     </map>
     <key>package_description</key>
@@ -136,8 +160,6 @@
           <array>
             <string>lib/release/libcrypto.a</string>
             <string>lib/release/libssl.a</string>
-            <string>lib/debug/libcrypto.a</string>
-            <string>lib/debug/libssl.a</string>
           </array>
           <key>name</key>
           <string>darwin</string>
@@ -160,7 +182,6 @@
           <key>manifest</key>
           <array>
             <string>lib/release/*.a</string>
-            <string>lib/debug/*.a</string>
           </array>
           <key>name</key>
           <string>linux</string>
@@ -184,10 +205,8 @@
           <array>
             <string>lib/release/libeay32.lib</string>
             <string>lib/release/libeay32.dll</string>
-            <string>lib/release/libeay32.pdb</string>
             <string>lib/release/ssleay32.lib</string>
             <string>lib/release/ssleay32.dll</string>
-            <string>lib/release/ssleay32.pdb</string>
           </array>
           <key>name</key>
           <string>windows</string>

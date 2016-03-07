@@ -6,19 +6,26 @@ cd "$(dirname "$0")"
 set -x
 # make errors fatal
 set -e
+# complain about unreferenced environment variables
+set -u
 
 if [ -z "$AUTOBUILD" ] ; then
     fail
 fi
 
 if [ "$OSTYPE" = "cygwin" ] ; then
-    export AUTOBUILD="$(cygpath -u $AUTOBUILD)"
+    autobuild="$(cygpath -u $AUTOBUILD)"
+else
+    autobuild="$AUTOBUILD"
 fi
 
 # load autbuild provided shell functions and variables
 set +x
-eval "$("$AUTOBUILD" source_environment)"
+eval "$("$autobuild" source_environment)"
 set -x
+
+# pull in LL_BUILD appropriate for platform and Release
+set_build_variables convenience Release
 
 # Restore all .sos
 restore_sos ()
@@ -44,7 +51,7 @@ restore_dylibs ()
 top="$(pwd)"
 stage="$top/stage"
 
-[ -f "$stage"/packages/include/zlib/zlib.h ] || fail "You haven't installed packages yet."
+[ -f "$stage"/packages/include/zlib/zlib.h ] || fail "You haven't yet run 'autobuild install'."
 
 OPENSSL_SOURCE_DIR="openssl"
 # Look in crypto/opensslv.h instead of the more obvious
@@ -79,22 +86,26 @@ pushd "$OPENSSL_SOURCE_DIR"
 
             if [ "$AUTOBUILD_ADDRSIZE" = 32 ]
             then
-                # disable idea cypher per Phoenix's patent concerns (DEV-22827)
-                perl Configure VC-WIN32 no-asm no-idea zlib threads -DNO_WINDOWS_BRAINDEATH \
-                    --with-zlib-include="$(cygpath -w "$stage/packages/include/zlib")" \
-                    --with-zlib-lib="$(cygpath -w "$stage/packages/lib/release/zlib.lib")"
-
-                # Not using NASM
-                ./ms/do_ms.bat
+                targetname=VC-WIN32
+                batname=do_ms
             else
-                # disable idea cypher per Phoenix's patent concerns (DEV-22827)
-                perl Configure VC-WIN64A no-asm no-idea zlib threads -DNO_WINDOWS_BRAINDEATH \
-                    --with-zlib-include="$(cygpath -w "$stage/packages/include/zlib")" \
-                    --with-zlib-lib="$(cygpath -w "$stage/packages/lib/release/zlib.lib")"
-
-                # Not using NASM
-                ./ms/do_win64a.bat
+                targetname=VC-WIN64A
+                batname=do_win64a
             fi
+
+            # disable idea cypher per Phoenix's patent concerns (DEV-22827)
+            # The syntax ${LL_BUILD////-} is ${var//a/b} ("expand var,
+            # substituting every 'a' with 'b'") in which a is '/' and b is
+            # '-'. In other words, we're changing /GR to -GR, etc., because
+            # Configure states that -switches will be passed through to the
+            # compiler. It doesn't mention /switches.
+            perl Configure "$targetname" no-asm no-idea zlib threads -DNO_WINDOWS_BRAINDEATH \
+                --with-zlib-include="$(cygpath -w "$stage/packages/include/zlib")" \
+                --with-zlib-lib="$(cygpath -w "$stage/packages/lib/release/zlib.lib")" \
+                ${LL_BUILD////-}
+
+            # Not using NASM
+            ./ms/"$batname.bat"
 
             nmake -f ms/ntdll.mak
 
@@ -107,9 +118,7 @@ pushd "$OPENSSL_SOURCE_DIR"
                 popd
             fi
 
-            cp -a out32dll/{libeay32,ssleay32}.lib "$stage/lib/release"
-            cp -a out32dll/{libeay32,ssleay32}.dll "$stage/lib/release"
-            cp -a out32dll/{libeay32,ssleay32}.pdb "$stage/lib/release"
+            cp -a out32dll/{libeay32,ssleay32}.{lib,dll} "$stage/lib/release"
 
             # Clean
             nmake -f ms/ntdll.mak vclean
@@ -123,8 +132,8 @@ pushd "$OPENSSL_SOURCE_DIR"
             perl ../copy-windows-links.pl "include/openssl" "$stage/include/openssl"
         ;;
 
-        "darwin")
-            # Temporary workaround for finding makedepend on mlion machines:
+        darwin*)
+            # workaround for finding makedepend on OS X
             export PATH="$PATH":/usr/X11/bin/
 
             # Install name for dylibs based on major version number
@@ -141,53 +150,12 @@ pushd "$OPENSSL_SOURCE_DIR"
                 fi
             done
 
-            # Select SDK with full path.  This shouldn't have much effect on this
-            # build but adding to establish a consistent pattern.
-            #
-            # sdk=/Developer/SDKs/MacOSX10.6.sdk/
-            # sdk=/Developer/SDKs/MacOSX10.7.sdk/
-            # sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/
-            sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/
-
-            # Keep min version back at 10.5 if you are using the
-            # old llqtwebkit repo which builds on 10.5 systems.
-            # At 10.6, zlib will start using __bzero() which doesn't
-            # exist there.
-            opts="${TARGET_OPTS:--arch i386 -iwithsysroot $sdk -mmacosx-version-min=10.7}"
-            export CFLAGS="$opts -gdwarf-2"
-            export CXXFLAGS="$opts -gdwarf-2"
+            opts="${TARGET_OPTS:--arch $AUTOBUILD_CONFIGURE_ARCH $LL_BUILD}"
+            export CFLAGS="$opts"
+            export CXXFLAGS="$opts"
             export LDFLAGS="-Wl,-headerpad_max_install_names"
 
-            # Debug first
-            ./Configure zlib threads no-idea shared no-gost 386 'debug-darwin-i386-cc' \
-                --prefix="$stage" --libdir="lib/debug" --openssldir="share" \
-                --with-zlib-include="$stage/packages/include/zlib" --with-zlib-lib="$stage/packages/lib/debug"
-            make depend
-            make
-            # Avoid plain 'make install' because, at least on Yosemite,
-            # installing the man pages into the staging area creates problems
-            # due to the number of symlinks. Thanks to Cinder for suggesting
-            # this make target.
-            make install_sw
-
-            # Modify .dylib path information.  Do this after install
-            # to the copies rather than built or the dylib's will be
-            # linked again wiping out the install_name.
-            crypto_stage_name="${stage}/lib/debug/${crypto_target_name}"
-            ssl_stage_name="${stage}/lib/debug/${ssl_target_name}"
-            chmod u+w "${crypto_stage_name}" "${ssl_stage_name}"
-            install_name_tool -id "${ssl_install_name}" "${ssl_stage_name}"
-            install_name_tool -id "${crypto_install_name}" "${crypto_stage_name}"
-            install_name_tool -change "${crypto_stage_name}" "${crypto_install_name}" "${ssl_stage_name}"
-
-            # conditionally run unit tests
-            if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
-                make test
-            fi
-
-            make clean
-
-            # Release last
+            # Release
             ./Configure zlib threads no-idea shared no-gost 386 'darwin-i386-cc' \
                 --prefix="$stage" --libdir="lib/release" --openssldir="share" \
                 --with-zlib-include="$stage/packages/include/zlib" --with-zlib-lib="$stage/packages/lib/release"
@@ -199,7 +167,9 @@ pushd "$OPENSSL_SOURCE_DIR"
             # this make target.
             make install_sw
 
-            # Modify .dylib path information
+            # Modify .dylib path information.  Do this after install
+            # to the copies rather than built or the dylib's will be
+            # linked again wiping out the install_name.
             crypto_stage_name="${stage}/lib/release/${crypto_target_name}"
             ssl_stage_name="${stage}/lib/release/${ssl_target_name}"
             chmod u+w "${crypto_stage_name}" "${ssl_stage_name}"
@@ -215,7 +185,7 @@ pushd "$OPENSSL_SOURCE_DIR"
             make clean
         ;;
 
-        "linux")
+        linux*)
             # Linux build environment at Linden comes pre-polluted with stuff that can
             # seriously damage 3rd-party builds.  Environmental garbage you can expect
             # includes:
@@ -231,22 +201,16 @@ pushd "$OPENSSL_SOURCE_DIR"
             #
             # unset DISTCC_HOSTS CC CXX CFLAGS CPPFLAGS CXXFLAGS
 
-            # Prefer gcc-4.6 if available.
-            if [ -x /usr/bin/gcc-4.6 -a -x /usr/bin/g++-4.6 ]; then
-                export CC=/usr/bin/gcc-4.6
-                export CXX=/usr/bin/g++-4.6
-            fi
-
-            # Default target to 32-bit
-            opts="${TARGET_OPTS:--m32}"
+            # Default target per AUTOBUILD_ADDRSIZE
+            opts="${TARGET_OPTS:--m$AUTOBUILD_ADDRSIZE $LL_BUILD}"
 
             # Handle any deliberate platform targeting
-            if [ -z "$TARGET_CPPFLAGS" ]; then
+            if [ -z "${TARGET_CPPFLAGS:-}" ]; then
                 # Remove sysroot contamination from build environment
                 unset CPPFLAGS
             else
                 # Incorporate special pre-processing flags
-                export CPPFLAGS="$TARGET_CPPFLAGS"
+                export CPPFLAGS="${TARGET_CPPFLAGS:-}"
             fi
 
             # Force static linkage to libz by moving .sos out of the way
@@ -262,25 +226,10 @@ pushd "$OPENSSL_SOURCE_DIR"
             # '--openssldir' as well.
             # "shared" means build shared and static, instead of just static.
 
-            # Debug first
-            CFLAGS="-g -O0" ./Configure zlib threads shared no-idea debug-linux-generic32 -fno-stack-protector "$opts" \
-                --prefix="$stage" --libdir="lib/debug" --openssldir="share" \
-                --with-zlib-include="$stage/packages/include/zlib" --with-zlib-lib="$stage"/packages/lib/debug/
-            make depend
-            make
-            make install
-
-            # conditionally run unit tests
-            if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
-                make test
-            fi
-
-            make clean
-
-            # "shared" means build shared and static, instead of just static.
             ./Configure zlib threads shared no-idea linux-generic32 -fno-stack-protector "$opts" \
                 --prefix="$stage" --libdir="lib/release" --openssldir="share" \
-                --with-zlib-include="$stage/packages/include/zlib" --with-zlib-lib="$stage"/packages/lib/release/
+                --with-zlib-include="$stage/packages/include/zlib" \
+                --with-zlib-lib="$stage"/packages/lib/release/
             make depend
             make
             make install
