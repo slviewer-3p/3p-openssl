@@ -155,10 +155,18 @@ pushd "$OPENSSL_SOURCE_DIR"
             export CXXFLAGS="$opts"
             export LDFLAGS="-Wl,-headerpad_max_install_names"
 
+            if [ "$AUTOBUILD_ADDRSIZE" = 32 ]
+            then
+                targetname='darwin-i386-cc 386'
+            else
+                targetname='darwin64-x86_64-cc'
+            fi
+
             # Release
-            ./Configure zlib threads no-idea shared no-gost 386 'darwin-i386-cc' \
+            ./Configure zlib threads no-idea shared no-gost $targetname \
                 --prefix="$stage" --libdir="lib/release" --openssldir="share" \
-                --with-zlib-include="$stage/packages/include/zlib" --with-zlib-lib="$stage/packages/lib/release"
+                --with-zlib-include="$stage/packages/include/zlib" \
+                --with-zlib-lib="$stage/packages/lib/release"
             make depend
             make
             # Avoid plain 'make install' because, at least on Yosemite,
@@ -221,12 +229,19 @@ pushd "$OPENSSL_SOURCE_DIR"
                 fi
             done
 
+            if [ "$AUTOBUILD_ADDRSIZE" = 32 ]
+            then
+                targetname='linux-generic32'
+            else
+                targetname='linux-x86_64'
+            fi
+
             # '--libdir' functions a bit different than usual.  Here it names
             # a part of a directory path, not the entire thing.  Same with
             # '--openssldir' as well.
             # "shared" means build shared and static, instead of just static.
 
-            ./Configure zlib threads shared no-idea linux-generic32 -fno-stack-protector "$opts" \
+            ./Configure zlib threads shared no-idea "$targetname" -fno-stack-protector "$opts" \
                 --prefix="$stage" --libdir="lib/release" --openssldir="share" \
                 --with-zlib-include="$stage/packages/include/zlib" \
                 --with-zlib-lib="$stage"/packages/lib/release/
