@@ -260,7 +260,7 @@ pushd "$OPENSSL_SOURCE_DIR"
             # This causes trouble for us down the road, along about the time
             # the consuming build tries to strip libraries.  It's easier to
             # make writable here than fix the viewer packaging.
-            chmod u+w "$stage"/lib/{release,debug}/lib{crypto,ssl}.so*
+            chmod u+w "$stage"/lib/release/lib{crypto,ssl}.so*
         ;;
     esac
     mkdir -p "$stage/LICENSES"
