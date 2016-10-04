@@ -1,16 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 cd "$(dirname "$0")"
 
 # turn on verbose debugging output for parabuild logs.
-set -x
+exec 4>&1; export BASH_XTRACEFD=4; set -x
 # make errors fatal
 set -e
 # complain about unreferenced environment variables
 set -u
 
 if [ -z "$AUTOBUILD" ] ; then
-    fail
+    exit 1
 fi
 
 if [ "$OSTYPE" = "cygwin" ] ; then
@@ -20,12 +20,9 @@ else
 fi
 
 # load autbuild provided shell functions and variables
-set +x
-eval "$("$autobuild" source_environment)"
-set -x
-
-# pull in LL_BUILD appropriate for platform and Release
-set_build_variables convenience Release
+source_environment_tempfile="$stage/source_environment.sh"
+"$autobuild" source_environment > "$source_environment_tempfile"
+. "$source_environment_tempfile"
 
 # Restore all .sos
 restore_sos ()
@@ -94,7 +91,7 @@ pushd "$OPENSSL_SOURCE_DIR"
             fi
 
             # disable idea cypher per Phoenix's patent concerns (DEV-22827)
-            # The syntax ${LL_BUILD////-} is ${var//a/b} ("expand var,
+            # The syntax ${LL_BUILD_RELEASE////-} is ${var//a/b} ("expand var,
             # substituting every 'a' with 'b'") in which a is '/' and b is
             # '-'. In other words, we're changing /GR to -GR, etc., because
             # Configure states that -switches will be passed through to the
@@ -102,7 +99,7 @@ pushd "$OPENSSL_SOURCE_DIR"
             perl Configure "$targetname" no-asm no-idea zlib threads -DNO_WINDOWS_BRAINDEATH \
                 --with-zlib-include="$(cygpath -w "$stage/packages/include/zlib")" \
                 --with-zlib-lib="$(cygpath -w "$stage/packages/lib/release/zlib.lib")" \
-                ${LL_BUILD////-}
+                ${LL_BUILD_RELEASE////-}
 
             # Not using NASM
             ./ms/"$batname.bat"
@@ -150,7 +147,7 @@ pushd "$OPENSSL_SOURCE_DIR"
                 fi
             done
 
-            opts="${TARGET_OPTS:--arch $AUTOBUILD_CONFIGURE_ARCH $LL_BUILD}"
+            opts="${TARGET_OPTS:--arch $AUTOBUILD_CONFIGURE_ARCH $LL_BUILD_RELEASE}"
             export CFLAGS="$opts"
             export CXXFLAGS="$opts"
             export LDFLAGS="-Wl,-headerpad_max_install_names"
@@ -210,7 +207,7 @@ pushd "$OPENSSL_SOURCE_DIR"
             # unset DISTCC_HOSTS CC CXX CFLAGS CPPFLAGS CXXFLAGS
 
             # Default target per AUTOBUILD_ADDRSIZE
-            opts="${TARGET_OPTS:--m$AUTOBUILD_ADDRSIZE $LL_BUILD}"
+            opts="${TARGET_OPTS:--m$AUTOBUILD_ADDRSIZE $LL_BUILD_RELEASE}"
 
             # Handle any deliberate platform targeting
             if [ -z "${TARGET_CPPFLAGS:-}" ]; then
@@ -269,6 +266,3 @@ popd
 
 mkdir -p "$stage"/docs/openssl/
 cp -a README.Linden "$stage"/docs/openssl/
-
-pass
-
