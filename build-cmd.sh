@@ -19,11 +19,6 @@ else
     autobuild="$AUTOBUILD"
 fi
 
-# load autbuild provided shell functions and variables
-source_environment_tempfile="$stage/source_environment.sh"
-"$autobuild" source_environment > "$source_environment_tempfile"
-. "$source_environment_tempfile"
-
 # Restore all .sos
 restore_sos ()
 {
@@ -48,7 +43,13 @@ restore_dylibs ()
 top="$(pwd)"
 stage="$top/stage"
 
-[ -f "$stage"/packages/include/zlib/zlib.h ] || fail "You haven't yet run 'autobuild install'."
+[ -f "$stage"/packages/include/zlib/zlib.h ] || \
+{ echo "You haven't yet run 'autobuild install'." 1>&2; exit 1; }
+
+# load autobuild provided shell functions and variables
+source_environment_tempfile="$stage/source_environment.sh"
+"$autobuild" source_environment > "$source_environment_tempfile"
+. "$source_environment_tempfile"
 
 OPENSSL_SOURCE_DIR="openssl"
 # Look in crypto/opensslv.h instead of the more obvious
