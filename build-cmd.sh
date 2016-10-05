@@ -92,15 +92,10 @@ pushd "$OPENSSL_SOURCE_DIR"
             fi
 
             # disable idea cypher per Phoenix's patent concerns (DEV-22827)
-            # The syntax ${LL_BUILD_RELEASE////-} is ${var//a/b} ("expand var,
-            # substituting every 'a' with 'b'") in which a is '/' and b is
-            # '-'. In other words, we're changing /GR to -GR, etc., because
-            # Configure states that -switches will be passed through to the
-            # compiler. It doesn't mention /switches.
             perl Configure "$targetname" no-asm no-idea zlib threads -DNO_WINDOWS_BRAINDEATH \
                 --with-zlib-include="$(cygpath -w "$stage/packages/include/zlib")" \
                 --with-zlib-lib="$(cygpath -w "$stage/packages/lib/release/zlib.lib")" \
-                ${LL_BUILD_RELEASE////-}
+                ${LL_BUILD_RELEASE}
 
             # Not using NASM
             ./ms/"$batname.bat"
