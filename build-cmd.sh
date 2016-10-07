@@ -91,17 +91,18 @@ pushd "$OPENSSL_SOURCE_DIR"
                 batname=do_win64a
             fi
 
-            # With openssl 1.0.1u and $LL_BUILD_RELEASE, we've started getting:
-            # target already defined - VC-WIN32 (offending arg: /MD)
-            # target already defined - VC-WIN64A (offending arg: /MD)
-            # Okay, remove that argument.
-            LL_BUILD_NO_MD="$(remove_switch /MD $LL_BUILD_RELEASE)"
+            # Set CFLAG directly, rather than on the Configure command line.
+            # Configure promises to pass through -switches, but is completely
+            # confounded by /switches. If you change /switches to -switches
+            # using bash string magic, Configure does pass them through --
+            # only to have cl.exe ignore them with extremely verbose warnings!
+            # CFLAG can accept /switches and correctly pass them to cl.exe.
+            export CFLAG="$LL_BUILD_RELEASE"
 
             # disable idea cypher per Phoenix's patent concerns (DEV-22827)
             perl Configure "$targetname" no-asm no-idea zlib threads -DNO_WINDOWS_BRAINDEATH \
                 --with-zlib-include="$(cygpath -w "$stage/packages/include/zlib")" \
-                --with-zlib-lib="$(cygpath -w "$stage/packages/lib/release/zlib.lib")" \
-                ${LL_BUILD_NO_MD}
+                --with-zlib-lib="$(cygpath -w "$stage/packages/lib/release/zlib.lib")"
 
             # Not using NASM
             ./ms/"$batname.bat"
@@ -128,7 +129,7 @@ pushd "$OPENSSL_SOURCE_DIR"
             # These files are symlinks in the SSL dist but just show up as text files
             # on windows that contain a string to their source.  So run some perl to
             # copy the right files over.
-            perl ../copy-windows-links.pl "include/openssl" "$stage/include/openssl"
+            perl ../copy-windows-links.pl "inc$AUTOBUILD_ADDRSIZE/openssl" "$stage/include/openssl"
         ;;
 
         darwin*)
