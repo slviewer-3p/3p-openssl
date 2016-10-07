@@ -91,11 +91,17 @@ pushd "$OPENSSL_SOURCE_DIR"
                 batname=do_win64a
             fi
 
+            # With openssl 1.0.1u and $LL_BUILD_RELEASE, we've started getting:
+            # target already defined - VC-WIN32 (offending arg: /MD)
+            # target already defined - VC-WIN64A (offending arg: /MD)
+            # Okay, remove that argument.
+            LL_BUILD_NO_MD="$(remove_switch /MD $LL_BUILD_RELEASE)"
+
             # disable idea cypher per Phoenix's patent concerns (DEV-22827)
             perl Configure "$targetname" no-asm no-idea zlib threads -DNO_WINDOWS_BRAINDEATH \
                 --with-zlib-include="$(cygpath -w "$stage/packages/include/zlib")" \
                 --with-zlib-lib="$(cygpath -w "$stage/packages/lib/release/zlib.lib")" \
-                ${LL_BUILD_RELEASE}
+                ${LL_BUILD_NO_MD}
 
             # Not using NASM
             ./ms/"$batname.bat"
