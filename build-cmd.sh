@@ -130,7 +130,8 @@ pushd "$OPENSSL_SOURCE_DIR"
             # on windows that contain a string to their source.  So run some perl to
             # copy the right files over. Note, even a 64-bit Windows build
             # puts header files into inc32/openssl!
-            perl ../copy-windows-links.pl "inc32/openssl" "$stage/include/openssl"
+            perl ../copy-windows-links.pl \
+                "inc32/openssl" "$(cygpath -w "$stage/include/openssl")"
         ;;
 
         darwin*)
