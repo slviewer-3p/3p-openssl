@@ -34,9 +34,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>5db4f54b95099f62e2a4def604de2fb1</string>
+              <string>e204dee29902549f50af1af2bb098df5</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/499/1070/zlib-1.2.8.500422-darwin64-500422.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/867/1903/zlib-1.2.8.500857-darwin64-500857.tar.bz2</string>
             </map>
             <key>name</key>
             <string>darwin64</string>
@@ -58,9 +58,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>40c6f9a7929da8036e9ae26cad5b20b8</string>
+              <string>dab6be8b0596c1e3354f2b6d41335131</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/601/1262/zlib-1.2.8.500422-linux64-500422.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/866/1898/zlib-1.2.8.500857-linux64-500857.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux64</string>
@@ -70,9 +70,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>6a64d8a95169e6c5e53288248c0654ff</string>
+              <string>f92cbb0ab5e5d20789bf6102f9a27aa6</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/446/965/zlib-1.2.8.500422-windows-500422.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/868/1906/zlib-1.2.8.500857-windows-500857.tar.bz2</string>
             </map>
             <key>name</key>
             <string>windows</string>
@@ -82,16 +82,16 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>8b3e6e8f8dc936d55c1e4f58b4ae5c4c</string>
+              <string>70a56767f6a109af412838875d0b5f1b</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/444/962/zlib-1.2.8.500422-windows64-500422.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/869/1909/zlib-1.2.8.500857-windows64-500857.tar.bz2</string>
             </map>
             <key>name</key>
             <string>windows64</string>
           </map>
         </map>
         <key>version</key>
-        <string>1.2.8.500422</string>
+        <string>1.2.8.500857</string>
       </map>
     </map>
     <key>package_description</key>
