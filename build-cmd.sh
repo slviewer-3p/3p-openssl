@@ -152,9 +152,14 @@ pushd "$OPENSSL_SOURCE_DIR"
                 fi
             done
 
-            opts="${TARGET_OPTS:--arch $AUTOBUILD_CONFIGURE_ARCH $LL_BUILD_RELEASE}"
-            export CFLAGS="$opts"
-            export CXXFLAGS="$opts"
+            # Normally here we'd insert -arch $AUTOBUILD_CONFIGURE_ARCH before
+            # $LL_BUILD_RELEASE. But the way we must pass these $opts into
+            # Configure doesn't seem to work for -arch: we get tons of:
+            # clang: warning: argument unused during compilation: '-arch=x86_64'
+            # Anyway, selection of $targetname (below) appears to handle the
+            # -arch switch implicitly.
+            opts="${TARGET_OPTS:-$LL_BUILD_RELEASE}"
+            export CFLAG="$opts"
             export LDFLAGS="-Wl,-headerpad_max_install_names"
 
             if [ "$AUTOBUILD_ADDRSIZE" = 32 ]
@@ -164,11 +169,42 @@ pushd "$OPENSSL_SOURCE_DIR"
                 targetname='darwin64-x86_64-cc'
             fi
 
+            # It seems to be important to Configure to pass (e.g.)
+            # "-iwithsysroot=/some/path" instead of just glomming them on
+            # as separate arguments. So make a pass over $opts, collecting
+            # switches with args in that form into a bash array.
+            packed=()
+            pack=()
+            function flush {
+                local IFS="="
+                # Flush 'pack' array to the next entry of 'packed'.
+                # ${pack[*]} concatenates all of pack's entries into a single
+                # string separated by the first char from $IFS.
+                packed[${#packed[*]}]="${pack[*]:-}"
+                pack=()
+            }
+            for opt in $opts $LDFLAGS
+            do 
+               if [ "${opt#-}" != "$opt" ]
+               then
+                   # 'opt' does indeed start with dash.
+                   flush
+               fi
+               # append 'opt' to 'pack' array
+               pack[${#pack[*]}]="$opt"
+            done
+            # When we exit the above loop, we've got one more pending entry in
+            # 'pack'. Flush that too.
+            flush
+            # We always have an extra first entry in 'packed'. Get rid of that.
+            unset packed[0]
+
             # Release
             ./Configure zlib threads no-idea shared no-gost $targetname \
                 --prefix="$stage" --libdir="lib/release" --openssldir="share" \
                 --with-zlib-include="$stage/packages/include/zlib" \
-                --with-zlib-lib="$stage/packages/lib/release"
+                --with-zlib-lib="$stage/packages/lib/release" \
+                "${packed[@]}"
             make depend
             make
             # Avoid plain 'make install' because, at least on Yosemite,
