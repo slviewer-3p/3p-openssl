@@ -2,6 +2,7 @@
 public_build = true
 
 # Need viewer-build-variables as well as other shared repositories
-buildscripts_shared_NAMEs="$buildscripts_shared_NAMEs build_variables"
+buildscripts_shared_NAMEs="autobuild build_secrets build_variables"
+##buildscripts_shared_more_NAMEs="build_variables"
 
 build_variables_repostory_url = "https://bitbucket.org/lindenlab/viewer-build-variables"
