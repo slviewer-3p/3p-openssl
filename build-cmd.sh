@@ -139,9 +139,12 @@ pushd "$OPENSSL_SOURCE_DIR"
             export PATH="$PATH":/usr/X11/bin/
 
             # Install name for dylibs based on major version number
-            crypto_target_name="libcrypto.${major_version}.${minor_version}.${build_version}.dylib"
+            # Not clear exactly why Configure/make generates lib*.1.0.0.dylib
+            # for ${major_version}.${minor_version}.${build_version} == 1.0.1,
+            # but obviously we must correctly predict the dylib filenames.
+            crypto_target_name="libcrypto.${major_version}.0.0.dylib"
             crypto_install_name="@executable_path/../Resources/${crypto_target_name}"
-            ssl_target_name="libssl.${major_version}.${minor_version}.${build_version}.dylib"
+            ssl_target_name="libssl.${major_version}.0.0.dylib"
             ssl_install_name="@executable_path/../Resources/${ssl_target_name}"
 
             # Force static linkage by moving .dylibs out of the way
