@@ -162,6 +162,9 @@ pushd "$OPENSSL_SOURCE_DIR"
             # Anyway, selection of $targetname (below) appears to handle the
             # -arch switch implicitly.
             opts="${TARGET_OPTS:-$LL_BUILD_RELEASE}"
+            # As of 2017-09-08:
+            # clang: error: unknown argument: '-gdwarf-with-dsym'
+            opts="${opts/-gdwarf-with-dsym/-gdwarf-2}"
             export CFLAG="$opts"
             export LDFLAGS="-Wl,-headerpad_max_install_names"
 
