@@ -319,9 +319,7 @@ int MAIN(int argc, char **argv)
 #define BSIZE 256
     MS_STATIC char buf[3][BSIZE];
     char *randfile = NULL;
-#ifndef OPENSSL_NO_ENGINE
     char *engine = NULL;
-#endif
     char *tofree = NULL;
     DB_ATTR db_attr;
 
@@ -473,6 +471,11 @@ int MAIN(int argc, char **argv)
                 goto bad;
             infile = *(++argv);
             dorevoke = 1;
+        } else if (strcmp(*argv, "-valid") == 0) {
+            if (--argc < 1)
+                goto bad;
+            infile = *(++argv);
+            dorevoke = 2;
         } else if (strcmp(*argv, "-extensions") == 0) {
             if (--argc < 1)
                 goto bad;
@@ -590,9 +593,7 @@ int MAIN(int argc, char **argv)
     if (!load_config(bio_err, conf))
         goto err;
 
-#ifndef OPENSSL_NO_ENGINE
     e = setup_engine(bio_err, engine, 0);
-#endif
 
     /* Lets get the config section we are using */
     if (section == NULL) {
@@ -1435,6 +1436,8 @@ int MAIN(int argc, char **argv)
             revcert = load_cert(bio_err, infile, FORMAT_PEM, NULL, e, infile);
             if (revcert == NULL)
                 goto err;
+            if (dorevoke == 2)
+                rev_type = -1;
             j = do_revoke(revcert, db, rev_type, rev_arg);
             if (j <= 0)
                 goto err;
@@ -1478,6 +1481,7 @@ int MAIN(int argc, char **argv)
     X509_CRL_free(crl);
     NCONF_free(conf);
     NCONF_free(extconf);
+    release_engine(e);
     OBJ_cleanup();
     apps_shutdown();
     OPENSSL_EXIT(ret);
@@ -1962,8 +1966,12 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
 
     if (enddate == NULL)
         X509_time_adj_ex(X509_get_notAfter(ret), days, 0, NULL);
-    else
+    else {
+        int tdays;
         ASN1_TIME_set_string(X509_get_notAfter(ret), enddate);
+        ASN1_TIME_diff(&tdays, NULL, NULL, X509_get_notAfter(ret));
+        days = tdays;
+    }
 
     if (!X509_set_subject_name(ret, subject))
         goto err;
@@ -2092,25 +2100,23 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
         goto err;
 
     /* We now just add it to the database */
-    row[DB_type] = (char *)OPENSSL_malloc(2);
-
     tm = X509_get_notAfter(ret);
-    row[DB_exp_date] = (char *)OPENSSL_malloc(tm->length + 1);
-    memcpy(row[DB_exp_date], tm->data, tm->length);
-    row[DB_exp_date][tm->length] = '\0';
-
-    row[DB_rev_date] = NULL;
-
-    /* row[DB_serial] done already */
-    row[DB_file] = (char *)OPENSSL_malloc(8);
+    row[DB_type] = OPENSSL_malloc(2);
+    row[DB_exp_date] = OPENSSL_malloc(tm->length + 1);
+    row[DB_rev_date] = OPENSSL_malloc(1);
+    row[DB_file] = OPENSSL_malloc(8);
     row[DB_name] = X509_NAME_oneline(X509_get_subject_name(ret), NULL, 0);
-
     if ((row[DB_type] == NULL) || (row[DB_exp_date] == NULL) ||
+        (row[DB_rev_date] == NULL) ||
         (row[DB_file] == NULL) || (row[DB_name] == NULL)) {
         BIO_printf(bio_err, "Memory allocation failure\n");
         goto err;
     }
-    BUF_strlcpy(row[DB_file], "unknown", 8);
+
+    memcpy(row[DB_exp_date], tm->data, tm->length);
+    row[DB_exp_date][tm->length] = '\0';
+    row[DB_rev_date][0] = '\0';
+    strcpy(row[DB_file], "unknown");
     row[DB_type][0] = 'V';
     row[DB_type][1] = '\0';
 
@@ -2120,10 +2126,8 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
         goto err;
     }
 
-    for (i = 0; i < DB_NUMBER; i++) {
+    for (i = 0; i < DB_NUMBER; i++)
         irow[i] = row[i];
-        row[i] = NULL;
-    }
     irow[DB_NUMBER] = NULL;
 
     if (!TXT_DB_insert(db->db, irow)) {
@@ -2131,11 +2135,14 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
         BIO_printf(bio_err, "TXT_DB error number %ld\n", db->db->error);
         goto err;
     }
+    irow = NULL;
     ok = 1;
  err:
-    for (i = 0; i < DB_NUMBER; i++)
-        if (row[i] != NULL)
+    if (irow != NULL) {
+        for (i = 0; i < DB_NUMBER; i++)
             OPENSSL_free(row[i]);
+        OPENSSL_free(irow);
+    }
 
     if (CAname != NULL)
         X509_NAME_free(CAname);
@@ -2218,7 +2225,6 @@ static int certify_spkac(X509 **xret, char *infile, EVP_PKEY *pkey,
     sk = CONF_get_section(parms, "default");
     if (sk_CONF_VALUE_num(sk) == 0) {
         BIO_printf(bio_err, "no name/value pairs found in %s\n", infile);
-        CONF_free(parms);
         goto err;
     }
 
@@ -2296,6 +2302,7 @@ static int certify_spkac(X509 **xret, char *infile, EVP_PKEY *pkey,
 
     j = NETSCAPE_SPKI_verify(spki, pktmp);
     if (j <= 0) {
+        EVP_PKEY_free(pktmp);
         BIO_printf(bio_err,
                    "signature verification failed on SPKAC public key\n");
         goto err;
@@ -2390,25 +2397,34 @@ static int do_revoke(X509 *x509, CA_DB *db, int type, char *value)
             goto err;
         }
 
-        for (i = 0; i < DB_NUMBER; i++) {
+        for (i = 0; i < DB_NUMBER; i++)
             irow[i] = row[i];
-            row[i] = NULL;
-        }
         irow[DB_NUMBER] = NULL;
 
         if (!TXT_DB_insert(db->db, irow)) {
             BIO_printf(bio_err, "failed to update database\n");
             BIO_printf(bio_err, "TXT_DB error number %ld\n", db->db->error);
+            OPENSSL_free(irow);
             goto err;
         }
 
+        for (i = 0; i < DB_NUMBER; i++)
+            row[i] = NULL;
+
         /* Revoke Certificate */
-        ok = do_revoke(x509, db, type, value);
+        if (type == -1)
+            ok = 1;
+        else
+            ok = do_revoke(x509, db, type, value);
 
         goto err;
 
     } else if (index_name_cmp_noconst(row, rrow)) {
         BIO_printf(bio_err, "ERROR:name does not match %s\n", row[DB_name]);
+        goto err;
+    } else if (type == -1) {
+        BIO_printf(bio_err, "ERROR:Already present, serial number %s\n",
+                   row[DB_serial]);
         goto err;
     } else if (rrow[DB_type][0] == 'R') {
         BIO_printf(bio_err, "ERROR:Already revoked, serial number %s\n",
