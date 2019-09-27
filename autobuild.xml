@@ -34,9 +34,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>ccf08885f5e26195440497f67e86336b</string>
+              <string>af447d6a21fe9f3aecae8031c8a79d2a</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/44229/391183/zlib-1.2.8.531289-darwin64-531289.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/44339/391704/zlib-1.2.8.531372-darwin64-531372.tar.bz2</string>
             </map>
             <key>name</key>
             <string>darwin64</string>
@@ -70,9 +70,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>54b85acabdaf6f5e006f77d9d7450d9f</string>
+              <string>e621d53c624d566fa56c20843b3caa75</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/43934/390513/zlib-1.2.8.531289-windows-531289.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/44370/391852/zlib-1.2.8.531372-windows-531372.tar.bz2</string>
             </map>
             <key>name</key>
             <string>windows</string>
@@ -82,16 +82,16 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>6d77355a8eeca8ca85d81e9d8b830ea3</string>
+              <string>bfb11c04dad97516efb60fa2068775f5</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/43933/390506/zlib-1.2.8.531289-windows64-531289.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/44369/391845/zlib-1.2.8.531372-windows64-531372.tar.bz2</string>
             </map>
             <key>name</key>
             <string>windows64</string>
           </map>
         </map>
         <key>version</key>
-        <string>1.2.8.531289</string>
+        <string>1.2.8.531372</string>
       </map>
     </map>
     <key>package_description</key>
