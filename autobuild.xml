@@ -34,9 +34,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>e204dee29902549f50af1af2bb098df5</string>
+              <string>9785bda5b4d3b41bf391b33d0da78c9e</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/867/1903/zlib-1.2.8.500857-darwin64-500857.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/54858/510190/zlib-1.2.8.538988-darwin64-538988.tar.bz2</string>
             </map>
             <key>name</key>
             <string>darwin64</string>
@@ -70,9 +70,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>f92cbb0ab5e5d20789bf6102f9a27aa6</string>
+              <string>ebdb07d4aaa5312005a8773f625032a4</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/868/1906/zlib-1.2.8.500857-windows-500857.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/55048/512031/zlib-1.2.8.538988-windows-538988.tar.bz2</string>
             </map>
             <key>name</key>
             <string>windows</string>
@@ -82,16 +82,16 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>70a56767f6a109af412838875d0b5f1b</string>
+              <string>0ac95f3dece7d575ba45cf5728f53eea</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/869/1909/zlib-1.2.8.500857-windows64-500857.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/55047/512024/zlib-1.2.8.538988-windows64-538988.tar.bz2</string>
             </map>
             <key>name</key>
             <string>windows64</string>
           </map>
         </map>
         <key>version</key>
-        <string>1.2.8.500857</string>
+        <string>1.2.8.538988</string>
       </map>
     </map>
     <key>package_description</key>
