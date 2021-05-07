@@ -52,13 +52,8 @@ source_environment_tempfile="$stage/source_environment.sh"
 . "$source_environment_tempfile"
 
 OPENSSL_SOURCE_DIR="openssl"
-# Look in crypto/opensslv.h instead of the more obvious
-# include/openssl/opensslv.h because the latter is (supposed to be) a symlink
-# to the former. That works on Mac and Linux but not Windows: on Windows we
-# get a plain text file containing the relative path to crypto/opensslv.h, and
-# a very strange "version number" because perl can't find
-# OPENSSL_VERSION_NUMBER. (Sigh.)
-raw_version=$(perl -ne 's/#\s*define\s+OPENSSL_VERSION_NUMBER\s+([\d]+)/$1/ && print' "${OPENSSL_SOURCE_DIR}/crypto/opensslv.h")
+
+raw_version=$(perl -ne 's/#\s*define\s+OPENSSL_VERSION_NUMBER\s+([\d]+)/$1/ && print' "${OPENSSL_SOURCE_DIR}/include/openssl/opensslv.h")
 
 major_version=$(echo ${raw_version:2:1})
 minor_version=$((10#$(echo ${raw_version:3:2})))
@@ -163,9 +158,9 @@ print(':'.join(OrderedDict((dir.rstrip('/'), 1) for dir in sys.argv[1].split(':'
             # Not clear exactly why Configure/make generates lib*.1.0.0.dylib
             # for ${major_version}.${minor_version}.${build_version} == 1.0.1,
             # but obviously we must correctly predict the dylib filenames.
-            crypto_target_name="libcrypto.${major_version}.0.0.dylib"
+            crypto_target_name="libcrypto.${major_version}.${minor_version}.dylib"
             crypto_install_name="@executable_path/../Resources/${crypto_target_name}"
-            ssl_target_name="libssl.${major_version}.0.0.dylib"
+            ssl_target_name="libssl.${major_version}.${minor_version}.dylib"
             ssl_install_name="@executable_path/../Resources/${ssl_target_name}"
 
             # Force static linkage by moving .dylibs out of the way
