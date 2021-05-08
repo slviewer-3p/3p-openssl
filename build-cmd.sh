@@ -80,11 +80,12 @@ pushd "$OPENSSL_SOURCE_DIR"
             if [ "$AUTOBUILD_ADDRSIZE" = 32 ]
             then
                 targetname=VC-WIN32
-                batname=do_ms
             else
+                # might require running vcvars64.bat from VS studio
                 targetname=VC-WIN64A
-                batname=do_win64a
             fi
+
+            # configre won't work with VC-* builds undex cygwin's perl, use window's one
 
             # Set CFLAG directly, rather than on the Configure command line.
             # Configure promises to pass through -switches, but is completely
@@ -95,7 +96,8 @@ pushd "$OPENSSL_SOURCE_DIR"
             export CFLAG="$LL_BUILD_RELEASE"
 
             # disable idea cypher per Phoenix's patent concerns (DEV-22827)
-            perl Configure "$targetname" no-asm no-idea zlib threads -DNO_WINDOWS_BRAINDEATH \
+            # no-asm disables the need for NASM
+            /cygdrive/c/Strawberry/perl/bin/perl Configure "$targetname" no-asm no-idea zlib threads -DNO_WINDOWS_BRAINDEATH \
                 --with-zlib-include="$(cygpath -w "$stage/packages/include/zlib")" \
                 --with-zlib-lib="$(cygpath -w "$stage/packages/lib/release/zlib.lib")"
 
@@ -120,34 +122,49 @@ pushd "$OPENSSL_SOURCE_DIR"
 from collections import OrderedDict
 print(':'.join(OrderedDict((dir.rstrip('/'), 1) for dir in sys.argv[1].split(':'))))" "$PATH")"
 
-            # Not using NASM
-            ./ms/"$batname.bat"
 
-            nmake -f ms/ntdll.mak
+            # Define PERL for nmake to use 
+            PERL="c:/Strawberry/perl/bin"
 
-            # conditionally run unit tests
-            if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
-                pushd out32dll
-                    # linden_test.bat is a clone of test.bat with unavailable
-                    # tests removed and the return status changed to fail if a problem occurs.
-                    ../ms/linden_test.bat
-                popd
-            fi
-
-            cp -a out32dll/{libeay32,ssleay32}.{lib,dll} "$stage/lib/release"
-
-            # Clean
-            nmake -f ms/ntdll.mak vclean
+            nmake
 
             # Publish headers
             mkdir -p "$stage/include/openssl"
 
             # These files are symlinks in the SSL dist but just show up as text files
             # on windows that contain a string to their source.  So run some perl to
-            # copy the right files over. Note, even a 64-bit Windows build
-            # puts header files into inc32/openssl!
+            # copy the right files over.
             perl ../copy-windows-links.pl \
-                "inc32/openssl" "$(cygpath -w "$stage/include/openssl")"
+                "include/openssl" "$(cygpath -w "$stage/include/openssl")"
+
+            #nmake test
+
+            # move dlls and libs
+            # It appears that libssl_static.lib is for integration and
+            # libssl.lib is for dll import. We probably don't care about
+            # _static variant since we need a dll, include just in case
+
+            if [ "$AUTOBUILD_ADDRSIZE" = 32 ]
+            then
+                mv libssl-1_1.dll $stage/lib/release/.
+                mv libssl-1_1.pdb $stage/lib/release/.
+                mv libssl_static.lib $stage/lib/release/.
+                mv libssl.lib $stage/lib/release/.
+                mv libcrypto-1_1.dll $stage/lib/release/.
+                mv libcrypto-1_1.pdb $stage/lib/release/.
+                mv libcrypto_static.lib $stage/lib/release/.
+                mv libcrypto.lib $stage/lib/release/.
+            else
+                mv libssl-1_1-x64.dll $stage/lib/release/.
+                mv libssl-1_1-x64.pdb $stage/lib/release/.
+                mv libssl_static.lib $stage/lib/release/.
+                mv libssl.lib $stage/lib/release/.
+                mv libcrypto-1_1-x64.dll $stage/lib/release/.
+                mv libcrypto-1_1-x64.pdb $stage/lib/release/.
+                mv libcrypto_static.lib $stage/lib/release/.
+                mv libcrypto.lib $stage/lib/release/.
+            fi
+
         ;;
 
         darwin*)
