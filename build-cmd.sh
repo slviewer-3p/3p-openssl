@@ -97,7 +97,7 @@ pushd "$OPENSSL_SOURCE_DIR"
 
             # disable idea cypher per Phoenix's patent concerns (DEV-22827)
             # no-asm disables the need for NASM
-            /cygdrive/c/Strawberry/perl/bin/perl Configure "$targetname" no-asm no-idea zlib threads -DNO_WINDOWS_BRAINDEATH \
+            /cygdrive/c/Strawberry/perl/bin/perl Configure "$targetname" no-idea zlib threads -DNO_WINDOWS_BRAINDEATH \
                 --with-zlib-include="$(cygpath -w "$stage/packages/include/zlib")" \
                 --with-zlib-lib="$(cygpath -w "$stage/packages/lib/release/zlib.lib")"
 
