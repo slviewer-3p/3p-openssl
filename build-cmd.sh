@@ -43,7 +43,7 @@ restore_dylibs ()
 top="$(pwd)"
 stage="$top/stage"
 
-[ -f "$stage"/packages/include/zlib/zlib.h ] || \
+[ -f "$stage"/packages/include/zlib-ng/zlib.h ] || \
 { echo "You haven't yet run 'autobuild install'." 1>&2; exit 1; }
 
 # load autobuild provided shell functions and variables
@@ -98,7 +98,7 @@ pushd "$OPENSSL_SOURCE_DIR"
             # disable idea cypher per Phoenix's patent concerns (DEV-22827)
             # no-asm disables the need for NASM
             /cygdrive/c/Strawberry/perl/bin/perl Configure "$targetname" no-idea zlib threads -DNO_WINDOWS_BRAINDEATH \
-                --with-zlib-include="$(cygpath -w "$stage/packages/include/zlib")" \
+                --with-zlib-include="$(cygpath -w "$stage/packages/include/zlib-ng")" \
                 --with-zlib-lib="$(cygpath -w "$stage/packages/lib/release/zlib.lib")"
 
             # We've observed some weird failures in which the PATH is too big
@@ -241,7 +241,7 @@ print(':'.join(OrderedDict((dir.rstrip('/'), 1) for dir in sys.argv[1].split(':'
             # Release
             ./Configure zlib threads no-idea shared no-gost $targetname \
                 --prefix="$stage" --libdir="lib/release" --openssldir="share" \
-                --with-zlib-include="$stage/packages/include/zlib" \
+                --with-zlib-include="$stage/packages/include/zlib-ng" \
                 --with-zlib-lib="$stage/packages/lib/release" \
                 "${packed[@]}"
             make depend
@@ -320,7 +320,7 @@ print(':'.join(OrderedDict((dir.rstrip('/'), 1) for dir in sys.argv[1].split(':'
 
             ./Configure zlib threads shared no-idea "$targetname" -fno-stack-protector "$opts" \
                 --prefix="$stage" --libdir="lib/release" --openssldir="share" \
-                --with-zlib-include="$stage/packages/include/zlib" \
+                --with-zlib-include="$stage/packages/include/zlib-ng" \
                 --with-zlib-lib="$stage"/packages/lib/release/
             make depend
             make
