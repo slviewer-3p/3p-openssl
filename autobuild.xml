@@ -58,9 +58,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>dab6be8b0596c1e3354f2b6d41335131</string>
+              <string>ecaa51df1bc359dfba7676373a1b86c6</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/ct2/866/1898/zlib-1.2.8.500857-linux64-500857.tar.bz2</string>
+              <string>jf://packages/linux64/zlib-1.2.11.221612031-linux64_bionic-221612031.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux64</string>
@@ -91,7 +91,7 @@
           </map>
         </map>
         <key>version</key>
-        <string>1.2.11.557041</string>
+        <string>1.2.11.221612031</string>
       </map>
     </map>
     <key>package_description</key>
