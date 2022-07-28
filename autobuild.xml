@@ -3,76 +3,42 @@
 <map>
     <key>installables</key>
     <map>
-      <key>zlib</key>
+      <key>zlib-ng</key>
       <map>
+        <key>canonical_repo</key>
+        <string>https://bitbucket.org/nickyd/3p-zlib-ng</string>
         <key>copyright</key>
         <string>Copyright (C) 1995-2013 Jean-loup Gailly and Mark Adler</string>
         <key>description</key>
-        <string>Zlib Data Compression Library</string>
+        <string>zlib data compression library for the next generation systems</string>
         <key>license</key>
-        <string>zlib</string>
+        <string>zlib-ng</string>
         <key>license_file</key>
-        <string>LICENSES/zlib.txt</string>
+        <string>LICENSES/zlib-ng.txt</string>
         <key>name</key>
-        <string>zlib</string>
+        <string>zlib-ng</string>
         <key>platforms</key>
         <map>
-          <key>darwin</key>
-          <map>
-            <key>archive</key>
-            <map>
-              <key>hash</key>
-              <string>1a79eeac199c2d94e4ae4e5d0194e25f</string>
-              <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/zlib_3p-update-zlib/rev/296881/arch/Darwin/installer/zlib-1.2.8.296881-darwin-296881.tar.bz2</string>
-            </map>
-            <key>name</key>
-            <string>darwin</string>
-          </map>
           <key>darwin64</key>
           <map>
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>9181bc8229f1a8e480d2a40a2744ec28</string>
+              <string>bf306e38bf81c6095e0967bdef6a2445</string>
               <key>url</key>
-              <string>https://automated-builds-secondlife-com.s3.amazonaws.com/ct2/78578/743913/zlib-1.2.11.557041-darwin64-557041.tar.bz2</string>
+              <string>https://automated-builds-secondlife-com.s3.amazonaws.com/ct2/87759/805718/zlib_ng-2.0.5.563838-darwin64-563838.tar.bz2</string>
             </map>
             <key>name</key>
             <string>darwin64</string>
-          </map>
-          <key>linux</key>
-          <map>
-            <key>archive</key>
-            <map>
-              <key>hash</key>
-              <string>98a8c775c581ca80bb559e8b4e8eaae7</string>
-              <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/p64_3p-zlib/rev/314131/arch/Linux/installer/zlib-1.2.8.314131-linux-314131.tar.bz2</string>
-            </map>
-            <key>name</key>
-            <string>linux</string>
-          </map>
-          <key>linux64</key>
-          <map>
-            <key>archive</key>
-            <map>
-              <key>hash</key>
-              <string>ecaa51df1bc359dfba7676373a1b86c6</string>
-              <key>url</key>
-              <string>jf://packages/linux64/zlib-1.2.11.221612031-linux64_bionic-221612031.tar.bz2</string>
-            </map>
-            <key>name</key>
-            <string>linux64</string>
           </map>
           <key>windows</key>
           <map>
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>8308cbd2ea0fe290541698b0f63482e2</string>
+              <string>8ffce5bd00e3d5afa8cb39b855237c4a</string>
               <key>url</key>
-              <string>https://automated-builds-secondlife-com.s3.amazonaws.com/ct2/78579/743926/zlib-1.2.11.557041-windows-557041.tar.bz2</string>
+              <string>https://automated-builds-secondlife-com.s3.amazonaws.com/ct2/87761/805730/zlib_ng-2.0.5.563838-windows-563838.tar.bz2</string>
             </map>
             <key>name</key>
             <string>windows</string>
@@ -82,16 +48,16 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>36bdc34f67d3ad3c57125dc1b16a3129</string>
+              <string>bd103a9129e57f7ea35886bc7750f8a6</string>
               <key>url</key>
-              <string>https://automated-builds-secondlife-com.s3.amazonaws.com/ct2/78577/743920/zlib-1.2.11.557041-windows64-557041.tar.bz2</string>
+              <string>https://automated-builds-secondlife-com.s3.amazonaws.com/ct2/87760/805729/zlib_ng-2.0.5.563838-windows64-563838.tar.bz2</string>
             </map>
             <key>name</key>
             <string>windows64</string>
           </map>
         </map>
         <key>version</key>
-        <string>1.2.11.221612031</string>
+        <string>2.0.5.563838</string>
       </map>
     </map>
     <key>package_description</key>
