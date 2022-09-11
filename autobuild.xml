@@ -63,7 +63,7 @@
     <key>package_description</key>
     <map>
       <key>canonical_repo</key>
-      <string>https://bitbucket.org/nickyd/3p-openssl</string>
+      <string>https://github.com/slviewer-3p/3p-openssl</string>
       <key>copyright</key>
       <string>Copyright (c) 1998-2011 The OpenSSL Project.  All rights reserved; Copyright (C) 1995-1998 Eric Young (eay@cryptsoft.com)</string>
       <key>description</key>
