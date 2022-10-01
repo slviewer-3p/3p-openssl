@@ -291,9 +291,10 @@ print(':'.join(OrderedDict((dir.rstrip('/'), 1) for dir in sys.argv[1].split(':'
                 fi
             done
 
-            if [ "$AUTOBUILD_ADDRSIZE" = 32 ]
-            then
-                targetname='linux-generic32'
+
+	    if [ "${AUTOBUILD_ARCH}" == "aarch64" ]
+	    then
+                targetname='linux-aarch64'
             else
                 targetname='linux-x86_64'
             fi
@@ -303,7 +304,7 @@ print(':'.join(OrderedDict((dir.rstrip('/'), 1) for dir in sys.argv[1].split(':'
             # '--openssldir' as well.
             # "shared" means build shared and static, instead of just static.
 
-            ./Configure zlib threads shared no-idea "$targetname" -fno-stack-protector "$opts" \
+            ./Configure zlib threads shared no-idea "$targetname" -fno-stack-protector $opts \
                 --prefix="$stage" --libdir="lib/release" --openssldir="share" \
                 --with-zlib-include="$stage/packages/include/zlib-ng" \
                 --with-zlib-lib="$stage"/packages/lib/release/
